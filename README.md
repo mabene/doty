@@ -4,7 +4,7 @@ A solver for the Day-of-the-Year calendar puzzle.
 
 ## Overview
 
-This solver is written in Python as an exercise in **literate programming** and **SAT-based** problem modeling and solving. It reduces the problem in polynomial time and space to a propositional formula, then uses a SAT solver to tackle the hard part of the puzzle.
+This solver is written in Python as an exercise in **literate programming** and **SAT-based** problem modeling and solving. It reduces the problem in polynomial time and space to a propositional formula, then uses a SAT solver to tackle the hard part of the puzzle. No AI 
 
 For more information about how the solver works see [this technical overview](./DayOfTheYear.md).
 
@@ -15,14 +15,15 @@ The code [is here](./DayOfTheYear.py).
 - Python 3.6+
 - [PySAT](https://pysathq.github.io/) library with [CaDiCaL](https://github.com/arminbiere/cadical) solver
 
-```bash
-pip install python-sat
-```
-
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/doty-solver.git
+# Clone the repository
+git clone https://github.com/mabene/doty.git
+cd doty
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 
