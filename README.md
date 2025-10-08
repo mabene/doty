@@ -4,12 +4,12 @@ A solver for the Day-of-the-Year calendar puzzle.
 
 ## Overview
 
-This solver is written in Python as an exercise in **literate programming** and **SAT-based** problem modeling and solving. It reduces the problem in polynomial time and space to a propositional formula, then uses a SAT solver to tackle the hard part of the puzzle. No AI 
+This solver is written in Python as an exercise in **literate programming** and **SAT-based** problem modeling and solving. It reduces the problem in polynomial time and space to a propositional formula, then uses a SAT solver to tackle the hard part of the puzzle.
 
 For more information about how the solver works see [this technical overview](./DayOfTheYear.md).
 
-The code [is here](./DayOfTheYear.py). 
-  
+The code [is here](./DayOfTheYear.py).  **No AI assistant** has been used to develop this software.
+
 ### Requirements
 
 - Python 3.6+
