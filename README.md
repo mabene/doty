@@ -11,7 +11,7 @@ For more information about how the solver works see [this technical overview](./
 The code [is here](./DayOfTheYear.py).  **No AI assistant** has been used to develop this software.
 
 Live solution for today's date:
-[https://dotypuzzle.com]()
+[https://dotypuzzle.com](https://dotypuzzle.com)
 
 ### Requirements
 
