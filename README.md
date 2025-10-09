@@ -19,7 +19,7 @@ This game is designed as a recreational challenge for humans, who typically need
 
 Even clever and persistent players sometimes **give up** after a few attempts.
 
-## Overview
+## Project Overview
 
 This project implements an AI solver for the DOTY puzzle, intended as a demonstration of **literate programming** and **SAT-based** problem modeling and solving.
 
