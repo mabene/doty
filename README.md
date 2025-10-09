@@ -4,7 +4,7 @@ An AI-based solver for the Day-of-the-Year calendar puzzle.
 
 ## The Puzzle
 
-The DOTY puzzle is played on a board (left) containing all months, days (1-31), and weekdays, using 10 [*polyomino* pieces](https://en.wikipedia.org/wiki/Polyomino) (right):
+The DOTY puzzle is played on a board (left) containing all months, days (1-31), and weekdays, using 10 pieces having different shapes (right):
 
 
 ![alt text](./images/board_and_pieces.png)
