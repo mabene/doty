@@ -6,7 +6,7 @@ This solver is primarily an **educational AI project** demonstrating **literate 
 
 Note: **No AI assistants** were used in writing this AI script! Every line of code and piece of documentation is human-written.
 
-### The nature of this puzzle
+### 1. The nature of this puzzle
 
 The DOTY puzzle is a special case of the [tiling](https://en.wikipedia.org/wiki/Tessellation) problem: covering a 7x8 rectangular region that contains some fixed (6) and some variable (3) holes, using 7 specific [free pentominoes](https://en.wikipedia.org/wiki/Pentomino) (from the set of 12) and 3 specific [free tetrominoes](https://en.wikipedia.org/wiki/Tetromino) (from the set of 5).
 
@@ -14,7 +14,7 @@ This falls under the broader class of problems involving tiling regions of the p
 
 Many variants of this puzzle exist. A famous example, known since the 1930s and formalized in the 1950s by [Solomon W. Golomb](https://en.wikipedia.org/wiki/Solomon_W._Golomb), is to tile a 6×10 rectangle with all twelve [free pentominoes](https://en.wikipedia.org/wiki/Pentomino). This and other variants were later published in Golomb's classic [book](https://en.wikipedia.org/wiki/Polyominoes:_Puzzles,_Patterns,_Problems,_and_Packings) in 1965.
 
-### Goal of the code
+### 2. Goal of the code
 
 The primary goal of the code is to produce a [polynomial Karp reduction](https://en.wikipedia.org/wiki/Polynomial-time_reduction) (in both time and space) of DOTY-like puzzles to the [NP-complete](https://en.wikipedia.org/wiki/NP-completeness) Boolean satisfiability problem ([SAT](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem)), for which "efficient" [solvers](https://en.wikipedia.org/wiki/
 SAT_solver) exist, based on decades of AI research.
@@ -23,7 +23,7 @@ In practice, the ``DayOfTheYear.py`` script transforms (or: reduces, encodes) an
 
 This is a formal, deductive approach that contrasts sharply with, for example, how LLMs operate: rather than relying on probabilistic, autoregressive text generation, we employ strict logical inference to guarantee both correctness and completeness in the solution process.
 
-### Coding Style
+### 3. Coding Style
 
 This code is written in the [literate programming](https://en.wikipedia.org/wiki/Literate_programming) style. The script is designed to be read sequentially from top to bottom as a "**computer science story**," (or lecture?) with thorough documentation explaining both the problem-solving approach and implementation details.
 
@@ -32,13 +32,13 @@ The script is **self-contained** and deliberately avoids external libraries exce
 NOTE: The literate programming style, with its **linear storytelling approach**, forces at times ackward choices about how you structure and lay out code: A minor sacrifice for a literarily satisfying outcome that elegantly wraps around executable code.
 
 
-### Code Size
+### 4. Code Size
 
 The puzzle solver is contained in [**one single** Python source file](https://github.com/mabene/doty/blob/main/DayOfTheYear.py), which is **1024** lines long. Only about **26%** of the script is actual executable code (**265** lines). The remaining **74%** is made of comments and explanations: it's the *story* of how we solve the puzzle in plain English.
 
 The core part of the script, where the problem is encoded into a SAT instance (Sections 5.2 and 5.3, see below), is just **20 lines** of code. The rest is about dealing with the input and specification of the problem, pretty printing the output, bookmarking, statistics, and support functions (see next section).
   
-### Code Structure
+### 5. Code Structure
 
 The script is organized into 8 main sections (actual lines of code in brakets):
 
@@ -53,7 +53,7 @@ The script is organized into 8 main sections (actual lines of code in brakets):
 
 The actual polynomial **reduction** is executed in Sections **3-5**. The external **solution** process is wrapped by Section **5**. The rest is **input** (Section **1-2**) and **output** (Sections **7-8**) management.
 
-### SAT Encoding & Solving
+### 6. SAT Encoding & Solving
 
 - **One-hot encoding**: Each variable represents "piece Pk covers cell (i,j)", for k in 1...10, i in 1...8, j in 1...7
 - **Constraints**: No overlaps, respect blocked cells, exactly one position per piece, all pieces on the board
@@ -82,7 +82,7 @@ Available components:
 
 See the script's help (`-h`) or source code for detailed component descriptions.
 
-### Solving Performance
+### 7. Solving Performance
 
 The encoding and solving process are fully sequential, so they are executed in a single-process, single-thread mode. On a standard modern (2020-25) laptop machine:
 
@@ -92,7 +92,7 @@ The encoding and solving process are fully sequential, so they are executed in a
 
 Timing breakdown is available with the `-v` flag.
 
-### Code Features
+### 8. Code Features
 
 - **Modular** board/piece definitions (easily customizable; see next section for an example)
 - **Flexible date** input parsing (multiple formats accepted)
@@ -102,7 +102,7 @@ Timing breakdown is available with the `-v` flag.
 - **Detailed timing** statistics
 - **Configurable formula** components (for experts)
 
-### Code Generality
+### 9. Code Generality
 
 The code extracts **dynamically** from the visual representations given in Section 2 - in particular, from the variables ``board`` and ``pieces``, all the relevant information about the shape, size, content, and dimension of the board and of the polyominoes.
 
@@ -137,7 +137,7 @@ For example, the classical [Golomb](https://en.wikipedia.org/wiki/Solomon_W._Gol
     '''
 
 
-### Exit Codes
+### 10. Exit Codes
 
 - `0` - Solution found (or help displayed)
 - `1` - No solution found

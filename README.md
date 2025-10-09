@@ -2,11 +2,28 @@
 
 An AI-based solver for the Day-of-the-Year calendar puzzle.
 
+## The Puzzle
+
+The DOTY puzzle is played on a board (left) containing all months, days (1-31), and weekdays, using 10 [*polyomino* pieces](https://en.wikipedia.org/wiki/Polyomino) (right):
+
+
+![alt text](./images/board_and_pieces.png)
+
+
+**Goal**: Place all 10 pieces on the board (rotations and flips allowed) so that exactly 3 cells remain visible, representing a target date (month, day number, weekday).
+
+For example, if you target the date "**Friday, December 26**", then a possible solution is as follows.
+![alt text](./images/FRI_DEC_26.png)
+
+This game is designed as a recreational challenge for humans, who typically need **several minutes** to uncover any one solution to a given puzzle instance, even though each day has **hundreds or thousands** of valid solutions.
+
+Even clever and persistent players sometimes **give up** after a few attempts.
+
 ## Overview
 
-This AI solver is implemented in Python as a demonstration of **literate programming** and **SAT-based** problem modeling and solving.
+This project implements an AI solver for the DOTY puzzle, intended as a demonstration of **literate programming** and **SAT-based** problem modeling and solving.
 
-It follows an AI paradigm that involves creating a **declarative formal specification** of the puzzle in a suitable **logical language**, and then applying **automated reasoning** tools to solve the resulting **encoding**.
+The solver follows an AI paradigm that involves creating a **declarative formal specification** of the puzzle in a suitable **logical language**, and then applying **automated reasoning** tools to solve the resulting **encoding**.
 
 For more information about how the solver works see [this technical overview](./DayOfTheYear.md).
 
@@ -30,22 +47,6 @@ cd doty
 # Install dependencies
 pip install -r requirements.txt
 ```
-
-
-## The Puzzle
-
-The DOTY puzzle is played on a board (left) containing all months, days (1-31), and weekdays, using 10 [*polyomino* pieces](https://en.wikipedia.org/wiki/Polyomino) (right):
-
-
-![alt text](./images/board_and_pieces.png)
-
-
-**Goal**: Place all 10 pieces on the board (rotations and flips allowed) so that exactly 3 cells remain visible, representing a target date (month, day number, weekday).
-
-For example, if you target the date "**Friday, December 26**", then a possible solution is as follows.
-![alt text](./images/FRI_DEC_26.png)
-
-This puzzle is designed as a recreational challenge for humans. Human solvers typically need **several minutes** to uncover any one solution to a given puzzle instance, despite the fact that each day typically has **hundreds or thousands** of solutions. And this is true even for clever and patient people... most **give up** after a few tries.
 
 ## Script usage
 

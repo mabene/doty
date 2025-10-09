@@ -671,18 +671,16 @@ cnf = CNF(from_clauses = puzzle_theory + puzzle_instance) if not help else None
 from pysat.solvers import Solver             
 solver = Solver(name = "cadical195", bootstrap_with=cnf) if not help else None
 
-# Interesting thing to know: The SAT solver will have to take a huge amount of non-deterministic choices during its
-# operations; like: "Is it best to assign this or this other variable next? Dhould I assign it to True or False first?"
-# If it takes thes choices randomly, its results would be always different, not reproducible; e.g., it would find a
-# different puzzle solution every time it is launched. This may be seen as a bug, or a feature, depending on what you
-# are after. To have it both ways, the solver uses a deterministic pseudo-random generator to perform its choices.
-# The generator creates always the same (apparently random) sequence of choices, if it starts from the same initial
-# "random seed", but each random seed produces an entirely different (and apparently random) sequence. So here, if the
-# "-rnd" flag is given at commandline, we pass the reasoner a different (pseudo) random seed every time it is launched
-# so it will likely generate a different solution to the same given puzzle at each call; otherwise, if "-rnd" is not
-# present, we set the seed to a fixed value of zero, and the solver will reproducibly find the very same solution to
-# whatever input puzzle, every time it is called.
-import random; solver.configure({"seed":random.randint(0, 2e9) if "-rnd" in flags else 0})
+# An interesting detail: The SAT solver must make many non-deterministic choices during its search, such as:
+# "Should I assign this variable or that one next? Should I set it to True or False first?" If these choices are made
+# randomly, the solver's results will differ each time it runs; for example, it could find a different puzzle solution
+# on every launch. Depending on your needs, this could be a bug or a feature. To allow both behaviors, the solver uses
+# a deterministic pseudo-random generator for its decisions. This generator produces the same (apparently random)
+# sequence of choices if started from the same initial "random seed"; each different seed yields a different sequence.
+# Therefore, if the "-rnd" flag is given on the command line, we pass the solver a new (pseudo) random seed each time,
+# so it will likely generate a different solution for the same puzzle on each run. Otherwise, if "-rnd" is not present,
+# we set the seed to a fixed value of zero, making the solver reproducibly find the same solution for any given input.
+import random; solver.configure({"seed":random.randint(0, int(2e9)) if "-rnd" in flags else 0})
 stop_timer("SAT setup")
 
 # There are often several (even thousands) of models for each formula (problem instance), so we instrument the code to
