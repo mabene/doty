@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 ########################################################################################################################
-# Content: Day-of-the-Year (DOTY) puzzle solver, version 0.1                                                           #
+# Content: Day-of-the-Year (DOTY) puzzle solver, version 0.2                                                           #
 # Author: Marco Benedetti (https://www.linkedin.com/in/marco-benedetti-art)                                            #
 #                                                                                                                      #
 # Note 1: No AI assistant has been used to produce this script; every line of code and every comment is human-written. #
@@ -670,6 +670,19 @@ cnf = CNF(from_clauses = puzzle_theory + puzzle_instance) if not help else None
 # This is the solver we are going to use, to which our puzzle theory + instance are given as an input problem.
 from pysat.solvers import Solver             
 solver = Solver(name = "cadical195", bootstrap_with=cnf) if not help else None
+
+# Interesting thing to know: The SAT solver will have to take a huge amount of non-deterministic choices during its
+# operations; like: "Is it best to assign this or this other variable next? Dhould I assign it to True or False first?"
+# If it takes thes choices randomly, its results would be always different, not reproducible; e.g., it would find a
+# different puzzle solution every time it is launched. This may be seen as a bug, or a feature, depending on what you
+# are after. To have it both ways, the solver uses a deterministic pseudo-random generator to perform its choices.
+# The generator creates always the same (apparently random) sequence of choices, if it starts from the same initial
+# "random seed", but each random seed produces an entirely different (and apparently random) sequence. So here, if the
+# "-rnd" flag is given at commandline, we pass the reasoner a different (pseudo) random seed every time it is launched
+# so it will likely generate a different solution to the same given puzzle at each call; otherwise, if "-rnd" is not
+# present, we set the seed to a fixed value of zero, and the solver will reproducibly find the very same solution to
+# whatever input puzzle, every time it is called.
+import random; solver.configure({"seed":random.randint(0, 2e9) if "-rnd" in flags else 0})
 stop_timer("SAT setup")
 
 # There are often several (even thousands) of models for each formula (problem instance), so we instrument the code to

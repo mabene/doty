@@ -1,18 +1,27 @@
-## DOTY Solver: Goal, algorithms, source code
+## DOTY AI Solver: Goal, algorithms, source code
 
 The full source code of the solver [is here](./DayOfTheYear.py).
 
-This solver is primarily an **educational project** demonstrating **literate programming** and **SAT-based** problem modeling/solving. So the code is **intentionally verbose and pedagogical** rather than optimized for production use. 
+This solver is primarily an **educational AI project** demonstrating **literate programming** and **SAT-based** problem modeling/solving. So the code is **intentionally verbose and pedagogical** rather than optimized for production use. 
 
-**No AI assistants** were used in writing this script. Every line of code and piece of documentation is human-written.
+Note: **No AI assistants** were used in writing this AI script! Every line of code and piece of documentation is human-written.
+
+### The nature of this puzzle
+
+The DOTY puzzle is a special case of the [tiling](https://en.wikipedia.org/wiki/Tessellation) problem: covering a 7x8 rectangular region that contains some fixed (6) and some variable (3) holes, using 7 specific [free pentominoes](https://en.wikipedia.org/wiki/Pentomino) (from the set of 12) and 3 specific [free tetrominoes](https://en.wikipedia.org/wiki/Tetromino) (from the set of 5).
+
+This falls under the broader class of problems involving tiling regions of the plane with sets of polyominoes—a problem that was [proved to be NP-complete](https://link.springer.com/article/10.1007/s00373-007-0713-4) in 2007.
+
+Many variants of this puzzle exist. A famous example, known since the 1930s and formalized in the 1950s by [Solomon W. Golomb](https://en.wikipedia.org/wiki/Solomon_W._Golomb), is to tile a 6×10 rectangle with all twelve [free pentominoes](https://en.wikipedia.org/wiki/Pentomino). This and other variants were later published in Golomb's classic [book](https://en.wikipedia.org/wiki/Polyominoes:_Puzzles,_Patterns,_Problems,_and_Packings) in 1965.
 
 ### Goal of the code
 
-The DOTY puzzle can be described as a special case of the problem of [tiling](https://en.wikipedia.org/wiki/Tessellation) a rectangular region (size 7x8) having some fixed (6) and some variable (3) holes, given 7 specific [free pentominoes](https://en.wikipedia.org/wiki/Pentomino) (out of 12) and 3 specific [free tetrominoes](https://en.wikipedia.org/wiki/Tetromino) (out of 5).
+The primary goal of the code is to produce a [polynomial Karp reduction](https://en.wikipedia.org/wiki/Polynomial-time_reduction) (in both time and space) of DOTY-like puzzles to the [NP-complete](https://en.wikipedia.org/wiki/NP-completeness) Boolean satisfiability problem ([SAT](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem)), for which "efficient" [solvers](https://en.wikipedia.org/wiki/
+SAT_solver) exist, based on decades of AI research.
 
-This is a special case of the general problem of tiling regions of the plane with sets of polyominoes, which was [proved to be NP-complete](https://link.springer.com/article/10.1007/s00373-007-0713-4), in 2007.
+In practice, the ``DayOfTheYear.py`` script transforms (or: reduces, encodes) any puzzle instance into an "equivalent" propositional formula. It then uses a SAT solver to determine the satisfiability of this formula and extract its model(s), thereby addressing the core combinatorial challenge of the puzzle.
 
-The key goal of the code is thus to generate a [polynomial Karp reduction](https://en.wikipedia.org/wiki/Polynomial-time_reduction) (in time and space) of DOTY-like puzzles onto the the [NP-complete](https://en.wikipedia.org/wiki/NP-completeness) boolean satisfiability problem ([SAT](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem)), for which "efficient" [solvers](https://en.wikipedia.org/wiki/SAT_solver) exist, based on decades of AI research.
+This is a formal, deductive approach that contrasts sharply with, for example, how LLMs operate: rather than relying on probabilistic, autoregressive text generation, we employ strict logical inference to guarantee both correctness and completeness in the solution process.
 
 ### Coding Style
 
@@ -101,7 +110,7 @@ This means that if you change these "drawings", you can generate and play with a
 
 A future version of the script may indeed move such input representations to external files, to be parsed, and solve the full class of tiling problems with polyominoes over rectangular regions with fixed/movable holes.
 
-For example, a typical polyominoes-based puzzle (known since the 30s, formalized in the 50s by [Solomon W.  Golomb](https://en.wikipedia.org/wiki/Solomon_W._Golomb), and later published in a [book](https://en.wikipedia.org/wiki/Polyominoes:_Puzzles,_Patterns,_Problems,_and_Packings) dated 1965, together with many variants) is to tile a 6×10 rectangle with all the twelve free pentominoes; it can be solved by our script setting the inputs as follows:
+For example, the classical [Golomb](https://en.wikipedia.org/wiki/Solomon_W._Golomb)'s problem about tiling a 6×10 rectangle with all twelve [free pentominoes](https://en.wikipedia.org/wiki/Pentomino) can be solved by our script setting the inputs as follows:
 
     board = '''
     ┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓

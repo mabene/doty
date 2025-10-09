@@ -1,1 +1,1 @@
-python-sat>=0.1.8
+python-sat>=1.8.dev23

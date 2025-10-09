@@ -1,16 +1,18 @@
 # Day-of-the-Year (DOTY) Puzzle Solver
 
-A solver for the Day-of-the-Year calendar puzzle.
+An AI-based solver for the Day-of-the-Year calendar puzzle.
 
 ## Overview
 
-This solver is written in Python as an exercise in **literate programming** and **SAT-based** problem modeling and solving. It reduces the problem in polynomial time and space to a propositional formula, then uses a SAT solver to tackle the hard part of the puzzle.
+This AI solver is implemented in Python as a demonstration of **literate programming** and **SAT-based** problem modeling and solving.
+
+It follows an AI paradigm that involves creating a **declarative formal specification** of the puzzle in a suitable **logical language**, and then applying **automated reasoning** tools to solve the resulting **encoding**.
 
 For more information about how the solver works see [this technical overview](./DayOfTheYear.md).
 
-The code [is here](./DayOfTheYear.py).  **No AI assistant** has been used to develop this software.
+The code [is here](./DayOfTheYear.py): **No AI assistant** has been used to develop this AI software.
 
-Live solution for today's date:
+Live solutions for today's date:
 [https://dotypuzzle.com](https://dotypuzzle.com)
 
 ### Requirements
