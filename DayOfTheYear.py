@@ -671,8 +671,8 @@ cnf = CNF(from_clauses = puzzle_theory + puzzle_instance) if not help else None
 from pysat.solvers import Solver             
 solver = Solver(name = "cadical195", bootstrap_with=cnf) if not help else None
 
-# An interesting detail: The SAT solver must make many non-deterministic choices during its search, such as:
-# "Should I assign this variable or that one next? Should I set it to True or False first?" If these choices are made
+# An interesting detail: The SAT solver will have to make many non-deterministic choices during its search, such as:
+# "Should I assign this variable or that one next? Should I set it to True or False first?". If these choices are made
 # randomly, the solver's results will differ each time it runs; for example, it could find a different puzzle solution
 # on every launch. Depending on your needs, this could be a bug or a feature. To allow both behaviors, the solver uses
 # a deterministic pseudo-random generator for its decisions. This generator produces the same (apparently random)

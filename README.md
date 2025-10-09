@@ -104,6 +104,11 @@ Target date: SAT OCT 25
 ./DayOfTheYear.py -dump Sat Oct 25
 ```
 
+### Exit Codes
+
+- `0` - Solution found (or help displayed)
+- `1` - No solution found
+
 ## License
 
 Copyright © 2025 Marco Benedetti
