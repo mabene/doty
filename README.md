@@ -45,6 +45,12 @@ The DOTY puzzle is played on a board (left) containing all months, days (1-31), 
 For example, if you target the date "**Friday, December 26**", then a possible solution is as follows.
 ![alt text](./images/FRI_DEC_26.png)
 
+This puzzle is designed as a recreational challenge for humans. Human solvers typically necesitates several minutes to uncover any one solution to a given puzzle instance, despite the fact that each day typically has hundreds or thousands of solutions. And this is true of clever and patient human fellows... most people give up after a few tries.
+
+
+
+ can take —
+
 ## Script usage
 
 ### Basic Usage
