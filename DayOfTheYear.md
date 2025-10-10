@@ -32,7 +32,7 @@ NOTE: The literate programming style, with its **linear storytelling approach**,
 
 ## 4. Code Size
 
-The puzzle solver is contained in [**one single** Python source file](https://github.com/mabene/doty/blob/main/DayOfTheYear.py), which is **1024** lines long. Only about **26%** of the script is actual executable code (**265** lines). The remaining **74%** is made of comments and explanations: it's the *story* of how we solve the puzzle in plain English.
+The puzzle solver is contained in [**one single** Python source file](https://github.com/mabene/doty/blob/main/DayOfTheYear.py), which is approximately **one thousand** lines long. Only about **1/4** of the script is actual executable code (**~250** lines). The remaining **3/4** is made of comments and explanations: it's the *story* of how we solve the puzzle in plain English.
 
 The core part of the script, where the problem is encoded into a SAT instance (Sections 5.2 and 5.3, see below), is just **20 lines** of code. The rest is about dealing with the input and specification of the problem, pretty printing the output, bookmarking, statistics, and support functions (see next section).
   

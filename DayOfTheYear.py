@@ -680,7 +680,9 @@ solver = Solver(name = "cadical195", bootstrap_with=cnf) if not help else None
 # Therefore, if the "-rnd" flag is given on the command line, we pass the solver a new (pseudo) random seed each time,
 # so it will likely generate a different solution for the same puzzle on each run. Otherwise, if "-rnd" is not present,
 # we set the seed to a fixed value of zero, making the solver reproducibly find the same solution for any given input.
-import random; solver.configure({"seed":random.randint(0, int(2e9)) if "-rnd" in flags else 0, "phase": 0 if "-rnd" in flags else 1})
+import random
+if solver is not None:
+	solver.configure({"seed":random.randint(0, int(2e9)) if "-rnd" in flags else 0, "phase": 0 if "-rnd" in flags else 1})
 stop_timer("SAT setup")
 
 # There are often several (even thousands) of models for each formula (problem instance), so we instrument the code to
@@ -982,6 +984,10 @@ OPTIONS:
                     blocked (only with -count)
                   - UNSAT.cnf: instance with all solutions blocked, proving
                     completeness of enumeration (only with -count)
+
+  -rnd            Randomize solver's search. Each run will likely find a
+                  different solution. Without this flag, the solver always
+                  finds the same solution for a given date (deterministic).
 
 ADVANCED OPTIONS:
   Control which constraints are included in the SAT encoding.
