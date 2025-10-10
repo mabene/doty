@@ -19,7 +19,7 @@ This game is designed as a recreational challenge for humans, who typically need
 
 Even clever and persistent players sometimes **give up** after a few attempts.
 
-So... struggling to get today’s date to show up properly? [It's here]([https://dotypuzzle.com](https://dotypuzzle.com)).
+So... struggling to get today’s date to show up properly? [It's here](https://dotypuzzle.com).
 
 
 ## Project Overview
