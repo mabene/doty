@@ -944,7 +944,7 @@ if "-v" in flags:
 # Let's recap for the user the syntax and functioning of the script, and of all its commandline options.
 if help:
   print('''\
-usage: Year2025.py [OPTIONS] [DATE]
+usage: DayOfTheYear.py [OPTIONS] [DATE]
 
 Day-of-the-Year (DotY) puzzle solver.
 
@@ -1011,20 +1011,20 @@ EXIT STATUS:
   1   No solution found (does not occur for valid dates)
 
 EXAMPLES:
-  Year2025.py
+  DayOfTheYear.py
       Solve for today's date and display the solution
 
-  Year2025.py Fri Dec 25
+  DayOfTheYear.py Fri Dec 25
       Solve for Friday, December 25
 
-  Year2025.py -count Mon Jan 1
+  DayOfTheYear.py -count Mon Jan 1
       Count all solutions for Monday, January 1
 
-  Year2025.py -count -show -v Sat Oct 25
+  DayOfTheYear.py -count -show -v Sat Oct 25
       Find and display all solutions for Saturday, October 25 with verbose
       output and timing information
 
-  Year2025.py -dump -v
+  DayOfTheYear.py -dump -v
       Solve for today and export the SAT instance to a DIMACS file
   ''')
   
