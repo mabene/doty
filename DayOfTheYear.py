@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 ########################################################################################################################
 # Content: Day-of-the-Year (DOTY) puzzle solver, version 0.2                                                           #
