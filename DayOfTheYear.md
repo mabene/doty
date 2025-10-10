@@ -2,9 +2,9 @@
 
 This solver is primarily an **educational AI project** demonstrating **literate programming** and **SAT-based** problem modeling/solving. The code is **intentionally verbose and pedagogical** rather than optimized for production use: for each line of code, there are approximately three lines of comments.
 
-The full source code of the solver [is here](./DayOfTheYear.py).
+The full source code of the solver [is here](./DayOfTheYear.py). An appendix with supplementary (PhD-level) material [is here](./Appendix.md).
 
-Note ¬🤖: **No AI assistants** were used in writing this AI script! Every line of code and piece of documentation is human-written.
+*Note* **¬🤖**: **No AI assistants** were used in writing this AI script! Every line of code and piece of documentation is human-written.
 
 ## 1. The nature of this puzzle
 
@@ -78,7 +78,7 @@ Available components:
 - **Instance**: `I.1` (required), `I.2` (optional)
 - **Encoding**: `E.1.1` (required), `E.1.2` (optional), `E.2.1` (required), `E.2.2` (optional)
 
-See the script's help (`-h`) or source code for detailed component descriptions.
+See the [Appendix](./Appendix.md) for detailed component descriptions.
 
 ## 8. Solving Performance
 

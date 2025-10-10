@@ -19,6 +19,9 @@ This game is designed as a recreational challenge for humans, who typically need
 
 Even clever and persistent players sometimes **give up** after a few attempts.
 
+So... struggling to get today’s date to show up properly? [It's here]([https://dotypuzzle.com](https://dotypuzzle.com)).
+
+
 ## Project Overview
 
 This project implements an AI solver for the DOTY puzzle, intended as a demonstration of **literate programming** and **SAT-based** problem modeling and solving.
@@ -29,9 +32,9 @@ Further resources:
 
 1. The code **[is here](./DayOfTheYear.py)**: No AI assistant has been used to develop this AI software.
 
-2. A **[technical overview](./DayOfTheYear.md)** provides information about how the solver works.
+2. A **[technical overview](./DayOfTheYear.md)** is included to provide information about how the solving process works and how the code is structured.
 
-3. Some **[supplementary material](./Appendix.md)** (PhD-level) is available that digs even deeper into the modeling/solving theory and design alternatives.
+3. Some **[supplementary material](./Appendix.md)** (PhD-level) is available that digs even deeper into the modeling/solving theory and our design choices.
 
 4. Last but not least:  **[https://dotypuzzle.com](https://dotypuzzle.com)** provides you with live solutions for today's date!
 
@@ -122,8 +125,8 @@ This software is provided "as is," without warranty of any kind. See the script 
 
 ## Author
 
-**Marco Benedetti**
-[LinkedIn](https://www.linkedin.com/in/marco-benedetti-art)
+**Marco Benedetti** - see [LinkedIn](https://www.linkedin.com/in/marco-benedetti-art) profile.
+[<mabene@gmail.com>]
 
 ---
 
