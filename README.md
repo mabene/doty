@@ -25,12 +25,15 @@ This project implements an AI solver for the DOTY puzzle, intended as a demonstr
 
 The solver follows an AI paradigm that involves creating a **declarative formal specification** of the puzzle in a suitable **logical language**, and then applying **automated reasoning** tools to solve the resulting **encoding**.
 
-For more information about how the solver works see [this technical overview](./DayOfTheYear.md).
+Further resources:
 
-The code [is here](./DayOfTheYear.py): **No AI assistant** has been used to develop this AI software.
+1. The code **[is here](./DayOfTheYear.py)**: No AI assistant has been used to develop this AI software.
 
-Live solutions for today's date:
-[https://dotypuzzle.com](https://dotypuzzle.com)
+2. A **[technical overview](./DayOfTheYear.md)** provides information about how the solver works.
+
+3. Some **[supplementary material](./Appendix.md)** (PhD-level) is available that digs even deeper into the modeling/solving theory and design alternatives.
+
+4. Last but not least:  **[https://dotypuzzle.com](https://dotypuzzle.com)** provides you with live solutions for today's date!
 
 ### Requirements
 
