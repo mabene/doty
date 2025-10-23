@@ -614,7 +614,7 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 # a "tabu" cell) will end up with at least one piece covering it. [OPTIONAL]
 [puzzle_instance.extend(C("I.2",AT_LEAST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for piece_idx in range(len(pieces))]))) \
 		for i in range(H) for j in range(W) if (i,j) not in (tabu_cell_coordinates + target_cells)]
-
+	
 ########################################################################################################################
 # 5.4. Printing the size of the propositional encoding we've built                                                     #
 ########################################################################################################################
@@ -862,7 +862,7 @@ for model in solver.enum_models() if not help else []:
 
 # In case we were enumerating models, and we're done, we print the total number of models found:
 if enumerate_solutions:
-	print(f"\r\33[K|solutions| = {n_models}")
+	print(f"\r\33[K|solutions| = {n_models}", flush = True)
 elif n_models == 0 and not help:
 	print("No solution found")
 
