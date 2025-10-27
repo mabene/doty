@@ -29,13 +29,13 @@ modification, is hereby granted, provided that the following conditions are met:
 ########################################################################################################################
 
 '''
-This script solves the so-called "Day-of-the-Year (DOTY)" board puzzle (cfr. Section 2), using AI tools produced by the
+This script solves the so-called "Day-of-the-Year (DOTY)" board puzzle (see Section 2), using AI tools produced by the
 "automated reasoning" (AR) research community. In particular: SAT solvers (https://en.wikipedia.org/wiki/SAT_solver).
 
 This code is also an exercise in "literate programming" (https://en.wikipedia.org/wiki/Literate_programming), so it 
 reads as a short, hopefully gripping "computer science story", meant to be read sequentially from top to bottom.
 
-Code is introduced as the story unfolds, and it is thoroughly documented: It follows the flow of thought used to think
+Code is introduced as the story unfolds, and it is thoroughly documented. It follows the flow of thought used to think
 about and solve the problem - rather than the idiosyncrasies of any specific programming language or logic/constraint
 framework. It should be comprehensible, at least in broad strokes, to novice programmers and non-programmers alike.
 
@@ -141,7 +141,7 @@ pieces = '''
 ⬜️⬜️⬜️ ⬜️⬜️⬜️ ⬜️⬜️⬜️ 🟦⬜️ ⬜️🟦 ⬜️⬜️ ⬜️⬜️   ⬜️⬜️ ⬜️⬜️ 🟦
 '''
 
-# We have assigned some reasonably mnemonic name to each piece (header row), in case we need to name them succinctly.
+# We have assigned some reasonably mnemonic names to each piece (header row), in case we need to name them succinctly.
 # In particular, we have 7 pentominoes (left, uppercase names) and 3 tetrominoes (right, lowercase names).
 
 # These 10 pieces - flipped on the back and/or rotated by multiples of 90° - are placed somewhere on the board.
@@ -178,7 +178,7 @@ __sample_solution_for_Saturday_October_25 = """
 # with some (6) fixed and some (3) variable holes, given the 7 pentominoes and the 3 tetrominoes in the picture above.
 
 # NICE TO KNOW: The code that follows extracts dynamically from the above visual representations (in particular, from 
-# the variables "board" and "pieces" - cfr. Section 3) all the relevant information about the shape, size, content, and
+# the variables "board" and "pieces" - see Section 3) all the relevant information about the shape, size, content, and
 # dimension of the board and of the pieces/polyominoes. This means that if you change the above "drawings", you can
 # generate and play with and solve any alternative layout or variant of the original puzzle!!
 
@@ -188,15 +188,15 @@ __sample_solution_for_Saturday_October_25 = """
 ########################################################################################################################
 
 '''
-In Section 2 we made it all very visual and human-friendly. We didn't constrain ourselves at all about:
+In Section 2, we made it all very visual and human-friendly. We didn't constrain ourselves at all about:
 (a) how the puzzle will be represented, internally to this script, in terms of data structures & co;
 (b) how the puzzle will be solved - whether by this script directly or by handing it off to some external tool.
 
 Now it's time to lay out our ideas about how to represent and solve the puzzle. First, some "preprocessing" steps:
 
-- In Section 3.1 we turn the "ASCII image" of the board ("board" variable) into a Python matrix.
-- In Section 3.2 we decide which data structure to use internally to handle the shape of the pieces given in "pieces".
-- In Section 3.3 we do something more substantial: We posit that the representation language and/or the solution 
+- In Section 3.1, we turn the "ASCII image" of the board ("board" variable) into a Python matrix.
+- In Section 3.2, we decide which data structure to use internally to handle the shape of the pieces given in "pieces".
+- In Section 3.3, we do something more substantial: We posit that the representation language and/or the solution 
   algorithm we will be using to solve the puzzle are not expressive enough to natively capture the fact that pieces
   can be flipped/rotated/translated before use, so we manage all these transformations "manually", here.
 '''
@@ -267,14 +267,14 @@ pieces = [[(i,j) for i in range(len(piece)) for j in range(len(piece[i])) if pie
 # 3.3. Computing all possible placements of all pieces, obtained by flipping and/or rotating and/or translating them   #
 ########################################################################################################################
 
-# By their nature, the 10 pieces of the puzzle are so called *free* polyominoes; this means that, before being used, 
+# By their nature, the 10 pieces of the puzzle are so-called *free* polyominoes; this means that, before being used, 
 # they can be FLIPPED on the back (i.e., rotated by 180° around any axis on the board plane) and/or ROTATED on the board
 # plane, by multiples of 90°. Once a specific flip/rotation state is decided, the result is called a "fixed polyomino".
 
 # The question is: Which part of the solution process is in charge of "fixing free polyominoes", in all possible ways?
 
 # We posit that the representation language and/or the solution algorithm we will be using to solve the puzzle will not
-# be expressive enough, or not willing to, or just not in charge of managing natively all the rotations and flips of the
+# be expressive enough, or not willing to, or just not in charge of natively managing all the rotations and flips of the
 # pieces on the board. So, we compute all of them ourself, explicitly, here: The rest of this script will deal with
 # several "fixed polyominoes", in lieu of the 10 free polyominoes originally defined.
 
@@ -360,10 +360,10 @@ In short, we will turn all the rules governing the puzzle - and those determinin
 propositional formula (https://en.wikipedia.org/wiki/Propositional_formula), whose "satisfying assignment(s)" or 
 "model(s)" represent(s)/encode(s) solution(s) to our puzzle instance.
 
-Then, we enlist an external, state-of-the-art SAT solver to find all such model(s) - cfr. Section 6.
+Then, we enlist an external, state-of-the-art SAT solver to find all such model(s) - see Section 6.
 
 The actual translation or "encoding" of the problem into a propositional framework will be done in Section 5.
-Here we lay the foundations for that to be possible, and choose how exactly to "speak propositionally" to the AI, given
+Here we lay the foundations to make that possible, and choose how exactly to "speak propositionally" to the AI, given
 the degrees of freedom that still exist, even once we settle on a "propositional setting".
 
 Among the other things, we resolve to produce not a general propositional formula, but directly one in CNF (Conjunctive
@@ -453,7 +453,7 @@ default_cfg_KO = [ "E.1.2", "E.2.2", "T.4" ] # default inactive components
 # Overall, starting from the defaults and applying commandline modifiers, we obtain the following "configuration":
 config = [X for X in default_cfg_OK if "-"+X not in flags] + [X for X in default_cfg_KO if "+"+X in flags]
 
-# Finally, let's implement (3): The following auxiliary function, simply named "C", will wrap any line of code that 
+# Finally, let's implement (3). The following auxiliary function, simply named "C", will wrap any line of code that 
 # produces clauses (see Sections 4.4, 5.1, 5.2), so to filter away those belonging to inactive components. "C" is a 
 # mnemonic for "Component" or "Constraint". At the calling site, invoking this function will declare the component 
 # name as the first argument, thus explicitly and visibly associating clauses with the component they belong to.
@@ -522,7 +522,7 @@ on the board (Section 4.1) and the means to write in clausal form all the necess
 let's construct a set of clauses that captures the rules of our puzzle, and what solutions look like.
 
 In particular, we first build a "puzzle theory" here (Section 5.1), i.e., a set of logical statements (list of clauses)
-whose models are all and only the legal configurations of all the pieces placed somewhere on the board (independently of
+whose models are exactly all the legal configurations of all the pieces placed somewhere on the board (independently of
 any specific instance we may want to solve). Then we define, again in logical terms, what an "instance" of the problem
 is (Section 5.2). Finally, we conjoin the puzzle theory with the instance of interest (e.g., today's date), so that the
 resulting formula's models are all and only the puzzle solutions for that instance (day).
@@ -605,9 +605,9 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 					for piece_idx in range(len(pieces))            # the pieces in... \
 					for (i,j) in target_cells]))                   # cells that represent the target date.
 
-# Such constraint has a different meaning but a syntactic structure identical to the ╳s' encodings from [T.2]. I.e., 
-# there are cells we do not want to overlap with our pieces. In Section 5.1's case it's because they are not part of the
-# board to begin with. Here, it's because we want to leave specific labels visible in order to... solve the puzzle!!
+# Such constraint has a different meaning but a syntactic structure identical to the encodings of the ╳ cells from [T.2]
+# I.e.: There are cells we do not want to overlap with our pieces. In Section 5.1's case it's because they are not part
+# of theboard to begin with. Here, it's because we want to leave specific labels visible... to solve the puzzle!!
 
 # [I.2] Let's also specify the dual instance constraint: that any cell that is not part of the target date (and is not
 # a "tabu" cell) will end up with at least one piece covering it. [OPTIONAL]
@@ -642,7 +642,7 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 # rules of our game, whereas optional components express facts that the reasoner can derive autonomously from the core
 # theory; and so, strictly speaking, optional components constitute redundant information.
 # The short answer to (II) is that, empirically, this configuration turns out to be the faster encoding to solve.
-# (A formal proof of (I) and an experimetal proof of (II) can be built; both are left as an exercise to the reader.)
+# (A formal proof of (I) and an experimental proof of (II) can be built; both are left as an exercise to the reader.)
 
 # Let's now move to conclude the present encoding section by providing some information to the user (if asked).
 
@@ -748,7 +748,7 @@ for model in solver.enum_models() if not help else []:
 
 ########################################################################################################################
 # 6.2. Reconstructing a puzzle solution from a model of the formula                                                    #
-##6#####################################################################################################################
+########################################################################################################################
 
 # Now, observe that most of the rest of this script is at level of indentation 1, and not zero, meaning that - as per
 # the Python syntactic rules - we are in the scope of the "for" loop above, the one that is enumerating all models. 
@@ -793,8 +793,9 @@ for model in solver.enum_models() if not help else []:
 
 	# Before writing the actual code meant to draw the solution (Section 7.2), we define 4 support functions that help
 	# us keep the main printing code compact and legible.
-
-	# 1. A small auxiliary function, extracting which piece (idx) is present at a given board position; there is...
+	
+	# 1. A small auxiliary function that extracts which piece (idx) is present at a given board position; there is...
+  given board position. There is...
 	def IDX_OF_PIECE_AT_CELL(i, j):
 		# ...no piece outside the board, and no piece where the solution matrix contains strings instead of integers
 		# Otherwise, the piece index is the integer value at solution[i][j]
@@ -891,7 +892,7 @@ for model in solver.enum_models() if not help else []:
 		start_timer("SAT solving")
 
 ########################################################################################################################
-# 8.1 Optionally printing info & stats about the solution process and its outcome                                      #
+# 8.1. Optionally printing info & stats about the solution process and its outcome                                     #
 ########################################################################################################################
 
 # In case we were enumerating models, and we're done, we print the total number of models found:
@@ -906,10 +907,10 @@ if "-v" in flags:
 	print("\n".join([f"[SAT] - {key}: {value}" for key, value in solver.accum_stats().items()]))	
 
 ########################################################################################################################
-# 8.2 Optionally dumping to file the SAT instance(s) we've been dealing with                                           #
+# 8.2. Optionally dumping to file the SAT instance(s) we've been dealing with                                          #
 ########################################################################################################################
 
-# In case the "-dump" flag is present, we dump to file a DIMACS representation of the SAT instance(s) we've solved.
+# In case the "-dump" flag is present, we dump a DIMACS representation of the SAT instance(s) we've solved to a file.
 if "-dump" in flags:
 	start_timer("DIMACS dumping")
 	if "-v" in flags:
@@ -954,7 +955,7 @@ if "-dump" in flags:
 	stop_timer("DIMACS dumping")
 
 ########################################################################################################################
-# 8.3 Optionally printing some stats about how (CPU) time was spent in solving the puzzle                              #
+# 8.3. Optionally printing some stats about how (CPU) time was spent in solving the puzzle                             #
 ########################################################################################################################
 
 # Now that the computation is done we can check the overall CPU time it has taken.
@@ -964,7 +965,7 @@ del elapsed["Total"]
 elapsed["Other"] = total - sum([elapsed[label] for label in elapsed])
 
 # If the user wants to know the timing details, e.g., which percentage of the overall running time was spent in
-# generating VS solving the instance, we let him/her know.
+# generating VS solving the instance, we let them know.
 if "-v" in flags:
 	print(f"[TIME] Total CPU time: {format_time(total)}")
 	[print(f"[TIME] - {label}: {format_time(time)} ({round(100.0*time/total,2)}%)") for label, time in elapsed.items()]
@@ -1063,7 +1064,7 @@ EXAMPLES:
   ''')
   
 ########################################################################################################################
-# 8.5 Exiting                                                                                                          #
+# 8.5. Exiting                                                                                                         #
 ########################################################################################################################
 	
 # Finally, the exit/return value of the whole script. It would be a nice touch to return the number of models/solutions
