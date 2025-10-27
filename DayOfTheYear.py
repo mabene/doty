@@ -15,13 +15,13 @@ Permission to use, copy, modify, and/or distribute this software for non-commerc
 modification, is hereby granted, provided that the following conditions are met:
 
 1.  **Attribution:** All copies of this software and derivative works must include the above copyright notice, this list
-	of conditions, and the following disclaimer.
+    of conditions, and the following disclaimer.
 2.  **Non-Commercial Use:** This software may not be used for any commercial purpose.
 3.  **No Warranty:** This software is provided "as is," without warranty of any kind, express or implied, including but
-	not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. 
-	In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether 
-	in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use 
-	or other dealings in the software.
+    not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. 
+    In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether 
+    in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use 
+    or other dealings in the software.
 '''
 
 ########################################################################################################################
@@ -71,7 +71,7 @@ The rest of this script is organized as follows:
 from sys import argv as flags
 help = "-h" in flags
 if help:
-	flags = ["-h"]
+    flags = ["-h"]
 
 ########################################################################################################################
 # 1.1. Timing the execution of the script                                                                              #
@@ -86,16 +86,16 @@ elapsed = {} # A dictionary that maps an activity name/label to its duration
 # Any section of interest will be enclosed into a start_timer("SECTION_LABEL") / stop_timer("SECTION_LABEL") pair;
 # calls to these functions can be nested; the time we are measuring is the CPU time, not the wallclock time.
 def start_timer(label):
-	t0[label] = time.process_time()
+    t0[label] = time.process_time()
 def stop_timer(label):
-	now = time.process_time()
-	elapsed[label] = (elapsed[label] if label in elapsed else 0.0) + (now - t0[label])
-	t0[label] = now
-	return elapsed[label]
+    now = time.process_time()
+    elapsed[label] = (elapsed[label] if label in elapsed else 0.0) + (now - t0[label])
+    t0[label] = now
+    return elapsed[label]
 
 # And when we need to print some elapsed time, we'll use this rounding/time-unit-adjusting function:
 def format_time(time):
-	return str(round(time,2))+"s" if time>=0.1 else str(int(round(time*1000,0)))+"ms"
+    return str(round(time,2))+"s" if time>=0.1 else str(int(round(time*1000,0)))+"ms"
 
 # So let's start with the outermost timing:
 start_timer("Total")
@@ -211,10 +211,10 @@ start_timer("Preprocessing")
 # We turn the string representation of the board into a handy bidimensional array of string elements, where cells[i][j]
 # contains the text in the cell at row i (starting from 0) and column j (again: 0-indexed, as they say)
 cells = [[txt.strip() \
-	for txt in row.split("┃")[1:-1]] \
-	for row in filter(lambda x: "━" not in x, 
-		board.splitlines())] \
-		[1:] # The first line in "board" is empty, not of interest here
+    for txt in row.split("┃")[1:-1]] \
+    for row in filter(lambda x: "━" not in x, 
+        board.splitlines())] \
+        [1:] # The first line in "board" is empty, not of interest here
 
 # As a result, these are the dimensions of the board (W for width - number of columns, H for height - number of rows)
 H = len(cells)
@@ -223,12 +223,12 @@ W = len(cells[0]) # We assume a non-jagged (rectangular) array here
 # Several times we will need to check whether a given pair of indices, whether expressed separately or as a tuple,
 # lies within or outside the limits of the board; so we define a few handy functions here.
 def out_of_bounds(i,j):
-	return i<0 or j<0 or i>=H or j>=W
+    return i<0 or j<0 or i>=H or j>=W
 def out_of_board(cell):
-	(i,j) = cell
-	return out_of_bounds(i,j)
+    (i,j) = cell
+    return out_of_bounds(i,j)
 def any_cell_is_out_of_board(cells):
-	return any([out_of_board(cell) for cell in cells])
+    return any([out_of_board(cell) for cell in cells])
 
 # Now, the following list of <text_in_cell,position_of_cell> pairs from the board:
 cell_txt_coordinates_couples = [(cells[i][j],(i,j)) for i in range(H) for j in range(W)]
@@ -237,7 +237,7 @@ cell_txt_coordinates_couples = [(cells[i][j],(i,j)) for i in range(H) for j in r
 # A. Detect and record all the (coordinates of the) tabu cells (marked with an "╳"), where pieces cannot be placed;
 tabu_cell_coordinates = [(i,j) for (txt,(i,j)) in cell_txt_coordinates_couples if txt=='╳']
 def is_tabu_cell(cell):
-	return cell in tabu_cell_coordinates
+    return cell in tabu_cell_coordinates
 
 # B. Build a dictionary for inverse searches: We map a given text to the position of the cell containing that text.
 cell_txt_to_cell_coordinate = dict(filter(lambda x: x[0]!='╳',cell_txt_coordinates_couples))
@@ -280,7 +280,7 @@ pieces = [[(i,j) for i in range(len(piece)) for j in range(len(piece[i])) if pie
 
 # Let's first deal with the fact that pieces can be FLIPPED on the back:
 '''
-	 Z         Z'
+   Z       Z'
  🟦🟦⬜️   🟦⬜️⬜️ 
  ⬜️🟦⬜️ ➤ 🟦🟦🟦 
  ⬜️🟦🟦   ⬜️⬜️🟦 
@@ -297,15 +297,15 @@ pieces_and_dopplegangers = list(zip(pieces,dopplegangers))
 # piece, we define a function that computes all its 4 rotated variants (rotated by multiples of 90°).
 from operator import itemgetter
 def all_rotated_variants(idxs):
-	# The offset is adjusted after the rotation around (0,0) so as to keep the piece layout in non-negative coordinates.
-	def offset_adj(idxs):
-		min_xy = [(min(list(map(itemgetter(0), r))), min(list(map(itemgetter(1), r)))) for r in idxs]
-		return [[(-min_x+x, -min_y+y) for (x,y) in indexes] for ((min_x,min_y),indexes) in zip(min_xy,idxs)]
-	return offset_adj([[(x*cos - y*sin, y*cos + x*sin) for (x,y) in idxs] for (cos,sin) in [(1,0),(0,1),(-1,0),(0,-1)]])
+    # The offset is adjusted after the rotation around (0,0) so as to keep the piece layout in non-negative coordinates.
+    def offset_adj(idxs):
+        min_xy = [(min(list(map(itemgetter(0), r))), min(list(map(itemgetter(1), r)))) for r in idxs]
+        return [[(-min_x+x, -min_y+y) for (x,y) in indexes] for ((min_x,min_y),indexes) in zip(min_xy,idxs)]
+    return offset_adj([[(x*cos - y*sin, y*cos + x*sin) for (x,y) in idxs] for (cos,sin) in [(1,0),(0,1),(-1,0),(0,-1)]])
 
 # All fixed rotated variants of all pieces and their dopplegangers are computed, for subsequent processing.
 fixed_variants_of_pieces = [all_rotated_variants(piece) + all_rotated_variants(doppleganger) \
-																for (piece,doppleganger) in pieces_and_dopplegangers]
+                                                                for (piece,doppleganger) in pieces_and_dopplegangers]
 
 # Now that we have dealt with flips and rotations, let us observe that one free polyomino corresponds to at most 8 fixed
 # polyominoes (which are also called "its images under the symmetries of the dihedral group D4"). However, those images
@@ -328,15 +328,15 @@ fixed_variants_of_pieces = [deduplicated(fixed_variants) for fixed_variants in f
 
 # Now, let's deal with TRANSLATIONS of pieces, again assuming our target framework won't handle translations natively.
 def translate(idxs,di,dj):
-	return [(i+di,j+dj) for (i,j) in idxs]
+    return [(i+di,j+dj) for (i,j) in idxs]
 
 # We basically position each piece (and all its distinct rotated/flipped variants) not only at the "origin" of the board
 # but at any horizontal/vertical location where it fits without overshooting the board (independently of the others).
 # We call each final version of each piece, after one flip/rotation/translation is applied, a "layout" of that piece.
 layouts_of_pieces = \
-	[[translate(fixed_variant,di,dj) for di in range(H) for dj in range(W) for fixed_variant in fixed_variants \
-		if not any_cell_is_out_of_board(translate(fixed_variant,di,dj)) \
-	 ] for fixed_variants in fixed_variants_of_pieces]
+    [[translate(fixed_variant,di,dj) for di in range(H) for dj in range(W) for fixed_variant in fixed_variants \
+        if not any_cell_is_out_of_board(translate(fixed_variant,di,dj)) \
+    ] for fixed_variants in fixed_variants_of_pieces]
 
 # Notice that as we "unfold", "position", "unroll", "exercise" the pieces virtually, so to say, across the entire board,
 # via flips/rotations/translations, we perform only a polynomial number of steps in the size of the board and in the 
@@ -383,7 +383,7 @@ input; (3) building the CNF directly gives us more control on how it is generate
 # multiple pieces on the same cell (piece overlaps), a situation that is not valid for our puzzle and will need to be
 # ruled out explicitly (see component [T.1] in Section 5.1); still, it gives very good results, experimentally.
 def VAR_FOR_PIECE_AT(piece_idx, i, j):
-	return 1 + (i*W + j) + (piece_idx*W*H)	
+    return 1 + (i*W + j) + (piece_idx*W*H)  
 
 # So the total number of "core" variables/propositions/bits we need to represent a full board/piece configuration for
 # the original puzzle (excluding auxiliary variables, see Section 4.4) is equal to... 
@@ -395,10 +395,10 @@ CORE_VAR_COUNT = VAR_FOR_PIECE_AT(len(pieces)-1,H-1,W-1) # (7x8)*10 = 560
 # the total number of variables in any variant of the SAT instances we'll produce is going to be 560+1803 = 2303.
 AUX_VAR_IDX = CORE_VAR_COUNT + 1
 def NEW_AUX_VAR():
-	global AUX_VAR_IDX
-	aux = AUX_VAR_IDX
-	AUX_VAR_IDX += 1
-	return aux
+    global AUX_VAR_IDX
+    aux = AUX_VAR_IDX
+    AUX_VAR_IDX += 1
+    return aux
 
 ########################################################################################################################
 # 4.2. Primitives for building clausal-form constraints                                                                #
@@ -409,22 +409,22 @@ def NEW_AUX_VAR():
 # the rest. The encoding of the concept is a list/CNF (to be appended to the current CNF) containing a single 
 # list/clause of the set of literals at least one of which must be true:
 def AT_LEAST_ONE(lit_idxs):
-	return [lit_idxs]
+    return [lit_idxs]
 
 # The "at most one of these propositions is true" concept is less easily rendered; this is not a standard propositional
 # operator; some solvers have an extra/specialized "propagator" for it, but we stick to the vanilla syntax. Whereby it
 # takes a quadratic number of binary clauses to capture the semantics. It is a matter of saying that whenever one of the
 # literals is true, all the other ones are false: ∀i≠j.(Li→¬Lj), i.e., ∀i≠j.(¬Li∨¬Lj); that's nx(n-1) binary clauses:
 def AT_MOST_ONE(lit_idxs):
-	return [[-if_true,-then_false] for if_true in lit_idxs for then_false in [x for x in lit_idxs if x != if_true]]
+    return [[-if_true,-then_false] for if_true in lit_idxs for then_false in [x for x in lit_idxs if x != if_true]]
 
 # Some nice compositional reuse of the two concepts we've just defined:
 def EXACTLY_ONE(lit_idxs):
-	return  AT_LEAST_ONE(lit_idxs) + AT_MOST_ONE(lit_idxs)
+    return  AT_LEAST_ONE(lit_idxs) + AT_MOST_ONE(lit_idxs)
 
 # A concept dual to "AT_LEAST_ONE", which can be rendered via n "unit" clauses, where the literals are negated:
 def NONE_OF(lit_idxs):
-	return [[-lit] for lit in lit_idxs]
+    return [[-lit] for lit in lit_idxs]
 
 ########################################################################################################################
 # 4.3. Dealing with mandatory/optional components of the clausal constraints that end up in our formula                #
@@ -458,7 +458,7 @@ config = [X for X in default_cfg_OK if "-"+X not in flags] + [X for X in default
 # mnemonic for "Component" or "Constraint". At the calling site, invoking this function will declare the component 
 # name as the first argument, thus explicitly and visibly associating clauses with the component they belong to.
 def C(component_name,component_clauses):
-	return component_clauses if component_name in config else []
+    return component_clauses if component_name in config else []
 
 # Let's see a dummy example (suppose we are in the default component configuration).
 cnf = [] # We start from an empty CNF.
@@ -496,21 +496,21 @@ cnf.extend( C("T.4", [[6,7]]) ) # we say clause [6,7] is in the inactive compone
 #
 # Both the input DNF and the output CNF are represented as a list of lists of (possibly negative) integers.
 def AT_LEAST_ONE_CONJUNCT(DNF):
-	# A fresh batch of auxiliary variables we use to denote each conjunct in the input DNF
-	auxs = [NEW_AUX_VAR() for _ in range(len(DNF))]
-	
-	# [E.1] The Tseytin version of the concept "at least one conjunct must be true" (or, optionally, exactly one):
-	cnf  = C("E.1.1", AT_LEAST_ONE(auxs)) 
-	cnf += C("E.1.2", AT_MOST_ONE(auxs)) # adding this turns the "at least one" constraint into "exactly one" [OPTIONAL]
+    # A fresh batch of auxiliary variables we use to denote each conjunct in the input DNF
+    auxs = [NEW_AUX_VAR() for _ in range(len(DNF))]
+    
+    # [E.1] The Tseytin version of the concept "at least one conjunct must be true" (or, optionally, exactly one):
+    cnf  = C("E.1.1", AT_LEAST_ONE(auxs)) 
+    cnf += C("E.1.2", AT_MOST_ONE(auxs)) # adding this turns the "at least one" constraint into "exactly one" [OPTIONAL]
 
-	# [E.2] The Tseytin way of binding the auxiliary variables' truth value to the conjuncts they stand for:
-	# [E.2.1] aux -> disjunct literal, for each literal of a given conjunct
-	cnf += C("E.2.1", [[-aux,lit] for (conjunct,aux) in zip(DNF,auxs) for lit in conjunct])
-	# [E.2.2] aux <- negated disjunct literals, for each conjunct [OPTIONAL in most encodings, including ours]
-	cnf += C("E.2.2", [[aux] + [-lit for lit in conjunct] for (conjunct,aux) in zip(DNF,auxs)])
+    # [E.2] The Tseytin way of binding the auxiliary variables' truth value to the conjuncts they stand for:
+    # [E.2.1] aux -> disjunct literal, for each literal of a given conjunct
+    cnf += C("E.2.1", [[-aux,lit] for (conjunct,aux) in zip(DNF,auxs) for lit in conjunct])
+    # [E.2.2] aux <- negated disjunct literals, for each conjunct [OPTIONAL in most encodings, including ours]
+    cnf += C("E.2.2", [[aux] + [-lit for lit in conjunct] for (conjunct,aux) in zip(DNF,auxs)])
 
-	return cnf
-			
+    return cnf
+            
 
 ########################################################################################################################
 # 5. Encoding the puzzle functioning + a specific puzzle instance into a propositional formula in CNF                  #
@@ -544,30 +544,30 @@ puzzle_theory = []
 
 # [T.1] Geometric constraints: No overlap among pieces (i.e., no board cell may be covered by more than one piece)
 [puzzle_theory.extend( \
-	C("T.1",AT_MOST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for piece_idx in range(len(pieces))])) ) \
-		for i in range(H) for j in range(W)]
+    C("T.1",AT_MOST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for piece_idx in range(len(pieces))])) ) \
+        for i in range(H) for j in range(W)]
 
 # [T.2] Board shape constraints: No piece on the tabu cells of the board (those marked with ╳)
 [puzzle_theory.extend(
-	C("T.2",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) for piece_idx in range(len(pieces))]))) \
-		 for (i,j) in tabu_cell_coordinates]
+    C("T.2",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) for piece_idx in range(len(pieces))]))) \
+        for (i,j) in tabu_cell_coordinates]
 
 # [T.3] Piece positioning constraints: Given all the valid ways each piece can be positioned on the board (irrespective
 # of the others, see Section 3.3) we declare that one such valid position is part of any solution, for every piece:
 [puzzle_theory.extend([] if piece_idx<0 else
-	AT_LEAST_ONE_CONJUNCT( [\
-		# [T.3.1] The following portion of the conjunct specifies explicitly all cells that our piece covers
-		C("T.3.1",[VAR_FOR_PIECE_AT(piece_idx,i,j) for (i,j) in layout_of_piece]) + \
+    AT_LEAST_ONE_CONJUNCT( [\
+        # [T.3.1] The following portion of the conjunct specifies explicitly all cells that our piece covers
+        C("T.3.1",[VAR_FOR_PIECE_AT(piece_idx,i,j) for (i,j) in layout_of_piece]) + \
 
-		# [T.3.2] The following portion of the conjunct specifies explicitly all cells where a piece is not [OPTIONAL]
-		C("T.3.2",[-VAR_FOR_PIECE_AT(piece_idx,i,j) for i in range(H) for j in range(W) if (i,j) not in layout_of_piece])
-	for layout_of_piece in layouts_of_piece] ) \
+        # [T.3.2] The following portion of the conjunct specifies explicitly all cells where a piece is not [OPTIONAL]
+        C("T.3.2",[-VAR_FOR_PIECE_AT(piece_idx,i,j) for i in range(H) for j in range(W) if (i,j) not in layout_of_piece])
+    for layout_of_piece in layouts_of_piece] ) \
 ) for piece_idx, layouts_of_piece in enumerate(layouts_of_pieces)]
 
 # [T.4] Completion constraints: In any solved puzzle, all pieces must find their location on the board [OPTIONAL]
 [puzzle_theory.extend( \
-	C("T.4",AT_LEAST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for i in range(H) for j in range(W)])) ) \
-		for piece_idx in range(len(pieces))]
+    C("T.4",AT_LEAST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for i in range(H) for j in range(W)])) ) \
+        for piece_idx in range(len(pieces))]
 
 # Now, we have characterized how to interlock all pieces in all possible sound and mutually consistent board positions.
 # What is missing is... to specify what exact day/instance we want to target...
@@ -602,8 +602,8 @@ if not help:
 
 # [I.1] Finally, we construct an "instance" of the problem, i.e., a set of clauses that assert we want to place...
 puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... \
-					for piece_idx in range(len(pieces))            # the pieces in... \
-					for (i,j) in target_cells]))                   # cells that represent the target date.
+                    for piece_idx in range(len(pieces))            # the pieces in... \
+                    for (i,j) in target_cells]))                   # cells that represent the target date.
 
 # Such constraint has a different meaning but a syntactic structure identical to the encodings of the ╳ cells from [T.2]
 # I.e.: There are cells we do not want to overlap with our pieces. In Section 5.1's case it's because they are not part
@@ -612,8 +612,8 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 # [I.2] Let's also specify the dual instance constraint: that any cell that is not part of the target date (and is not
 # a "tabu" cell) will end up with at least one piece covering it. [OPTIONAL]
 [puzzle_instance.extend(C("I.2",AT_LEAST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for piece_idx in range(len(pieces))]))) \
-		for i in range(H) for j in range(W) if (i,j) not in (tabu_cell_coordinates + target_cells)]
-	
+        for i in range(H) for j in range(W) if (i,j) not in (tabu_cell_coordinates + target_cells)]
+    
 ########################################################################################################################
 # 5.3. Mandatory/optional portions of the clausal constraints that end up in our formula, and its overall size         #
 ########################################################################################################################
@@ -648,16 +648,16 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 
 # In verbose mode, we tell the user which components have been generated, and which have not.
 if "-v" in flags:
-	print(f"[THEORY] Formula components:")
-	print(f"[THEORY] - Included: {' '.join(config)}")
-	print(f"[THEORY] - Excluded: {' '.join([c for c in default_cfg_KO+default_cfg_OK if c not in config])}")
+    print(f"[THEORY] Formula components:")
+    print(f"[THEORY] - Included: {' '.join(config)}")
+    print(f"[THEORY] - Excluded: {' '.join([c for c in default_cfg_KO+default_cfg_OK if c not in config])}")
 
 # In case the user wants to know, this is how big the propositional formula we constructed turned out to be.
 if "-v" in flags:
-	print(f"[CNF] Formula size:")
-	print(f"[CNF] - variables: {AUX_VAR_IDX-1}")
-	print(f"[CNF] - clauses:   {len(puzzle_theory + puzzle_instance)}")
-	print(f"[CNF] - literals:  {sum([len(clause) for clause in puzzle_theory + puzzle_instance])}")
+    print(f"[CNF] Formula size:")
+    print(f"[CNF] - variables: {AUX_VAR_IDX-1}")
+    print(f"[CNF] - clauses:   {len(puzzle_theory + puzzle_instance)}")
+    print(f"[CNF] - literals:  {sum([len(clause) for clause in puzzle_theory + puzzle_instance])}")
 
 # The encoding process is completed.
 stop_timer("Encoding")
@@ -715,8 +715,8 @@ solver = Solver(name = "cadical195", bootstrap_with=cnf) if not help else None
 # we set the seed to a fixed value of zero, making the solver reproducibly find the same solution for any given input.
 import random
 if solver is not None:
-	solver.configure({"seed" : random.randint(0, int(2e9)) if "-rnd" in flags else 0,
-		              "phase": 0 if "-rnd" in flags else 1})
+    solver.configure({"seed" : random.randint(0, int(2e9)) if "-rnd" in flags else 0,
+                      "phase": 0 if "-rnd" in flags else 1})
 stop_timer("SAT setup")
 
 # There are often several (even thousands) of models for each formula (problem instance), so we instrument the code to
@@ -727,24 +727,24 @@ models = []
 start_timer("SAT solving")
 # The execution of the following pysat's enumerator triggers the actual SAT solving process:
 for model in solver.enum_models() if not help else []: 
-	stop_timer("SAT solving")
+    stop_timer("SAT solving")
 
-	# We count and optionally store all models the SAT solver finds.
-	n_models += 1
-	if "-dump" in flags:
-		models.append(model[:CORE_VAR_COUNT]) # Aux variables deterministically follow the core ones, by construction
-	
-	if enumerate_solutions:
-		if show_solution:
-			if n_models>1:
-				# The special sequence "\33[N]A" goes up N lines in the output and is meant to overwrite in place the
-				# previous solution with the next one, in case we are "enumerating & showing" all solutions:
-				print(f"\33[{H*2+3}A")
-			print(f"Solution #{n_models}:")
-		else:
-			# This is to print a live update on the number of models/solutions found, as the search goes on; the special
-			# sequence "\r\33[K" moves back to the beginning of the current line in the output, so we overwrite it:
-			print(f"\r\33[K|solutions| ≥ {n_models}", end="", flush = True)
+    # We count and optionally store all models the SAT solver finds.
+    n_models += 1
+    if "-dump" in flags:
+        models.append(model[:CORE_VAR_COUNT]) # Aux variables deterministically follow the core ones, by construction
+    
+    if enumerate_solutions:
+        if show_solution:
+            if n_models>1:
+                # The special sequence "\33[N]A" goes up N lines in the output and is meant to overwrite in place the
+                # previous solution with the next one, in case we are "enumerating & showing" all solutions:
+                print(f"\33[{H*2+3}A")
+            print(f"Solution #{n_models}:")
+        else:
+            # This is to print a live update on the number of models/solutions found, as the search goes on; the special
+            # sequence "\r\33[K" moves back to the beginning of the current line in the output, so we overwrite it:
+            print(f"\r\33[K|solutions| ≥ {n_models}", end="", flush = True)
 
 ########################################################################################################################
 # 6.2. Reconstructing a puzzle solution from a model of the formula                                                    #
@@ -758,138 +758,137 @@ for model in solver.enum_models() if not help else []:
 
 # We have to move back from this assignment to the original problem space by "decoding"/interpreting the model. 
 
-	# Auxiliary function first. For each single cell, we check what is there in the current solution:
-	def WHATS_AT_CELL(i, j):
-		# Either the cell coordinates are out of bounds, so there is nothing there
-		if out_of_bounds(i,j):
-			return None
-		# Or, one of the pieces (the piece number piece_idx) covers that cell
-		for piece_idx in range(len(pieces)):
-			if VAR_FOR_PIECE_AT(piece_idx,i,j) in model: 
-				return piece_idx
-		# Or, no piece covers the cell, so the content of the original board cell is visible through the hole:
-		return cells[i][j]
+    # Auxiliary function first. For each single cell, we check what is there in the current solution:
+    def WHATS_AT_CELL(i, j):
+        # Either the cell coordinates are out of bounds, so there is nothing there
+        if out_of_bounds(i,j):
+            return None
+        # Or, one of the pieces (the piece number piece_idx) covers that cell
+        for piece_idx in range(len(pieces)):
+            if VAR_FOR_PIECE_AT(piece_idx,i,j) in model: 
+                return piece_idx
+        # Or, no piece covers the cell, so the content of the original board cell is visible through the hole:
+        return cells[i][j]
 
-	# Overall, our solution is represented as a matrix (list of lists) of values, having the same dimensions as the
-	# original board; the value at position (i,j) is either an integer (the ordinal number of the piece covering that 
-	# cell, if any); or a string: the corresponding text value from the original board, if not hidden by any piece.
-	solution = [[WHATS_AT_CELL(i, j) for j in range(W)] for i in range(H)]
-	
-	# From now on, having decoded our "model" into a "solution", the code will refer to the "solution" variable only.
+    # Overall, our solution is represented as a matrix (list of lists) of values, having the same dimensions as the
+    # original board; the value at position (i,j) is either an integer (the ordinal number of the piece covering that 
+    # cell, if any); or a string: the corresponding text value from the original board, if not hidden by any piece.
+    solution = [[WHATS_AT_CELL(i, j) for j in range(W)] for i in range(H)]
+    
+    # From now on, having decoded our "model" into a "solution", the code will refer to the "solution" variable only.
 
 
 ########################################################################################################################
 # 7. (Pretty) printing the solution                                                                                    #
 ########################################################################################################################
 
-	# It's time to print the solution for the user to admire! :) But let us first check if we are indeed required to
-	# print the solution; in case we are not, we go on with possibly counting how many solutions do exist.
-	if not show_solution:
-		continue
+    # It's time to print the solution for the user to admire! :) But let us first check if we are indeed required to
+    # print the solution; in case we are not, we go on with possibly counting how many solutions do exist.
+    if not show_solution:
+        continue
 
 ########################################################################################################################
 # 7.1. Auxiliary text & chrome generation functions                                                                    #
 ########################################################################################################################
 
-	# Before writing the actual code meant to draw the solution (Section 7.2), we define 4 support functions that help
-	# us keep the main printing code compact and legible.
-	
-	# 1. A small auxiliary function that extracts which piece (idx) is present at a given board position; there is...
-  given board position. There is...
-	def IDX_OF_PIECE_AT_CELL(i, j):
-		# ...no piece outside the board, and no piece where the solution matrix contains strings instead of integers
-		# Otherwise, the piece index is the integer value at solution[i][j]
-		return None if out_of_bounds(i,j) or not isinstance(solution[i][j],int) else solution[i][j]
+    # Before writing the actual code meant to draw the solution (Section 7.2), we define 4 support functions that help
+    # us keep the main printing code compact and legible.
+    
+    # 1. A small auxiliary function that extracts which piece (idx) is present at a given board position; there is...  
+    def IDX_OF_PIECE_AT_CELL(i, j):
+        # ...no piece outside the board, and no piece where the solution matrix contains strings instead of integers
+        # Otherwise, the piece index is the integer value at solution[i][j]
+        return None if out_of_bounds(i,j) or not isinstance(solution[i][j],int) else solution[i][j]
 
-	# 2. An aux function that returns True iff the two cells given as input are covered by the same piece in "solution"
-	def same_piece_at_cells(cell1,cell2):
-		(i1,j1) = cell1
-		(i2,j2) = cell2
-		idx1 = IDX_OF_PIECE_AT_CELL(i1, j1)
-		idx2 = IDX_OF_PIECE_AT_CELL(i2, j2)
-		# First, the easy check: If both cells are indeed covered by some piece, and that's the same piece, then fine!
-		same_piece = (idx1 is not None and idx2 is not None and idx1==idx2)
-		# But, we have to deal with several special/corner cases, where one or both cells are either tabu cells
-		# or lie outside the board, or are covered by no piece at all (the 3 cells left visible in each solution).
-		# What does it mean to be "covered by the same piece" in these cases? We define that it means to belong to a
-		# virtual piece that surrounds the board and absorbs the tabu cells; couples of cells belong to this piece iff
-		# they are both outside the board, or they are both tabu cells, or one is a tabu cell and one is out of board.
-		same_virtual_piece = \
-			any([P1(cell1) and P2(cell2) for P1 in [out_of_board, is_tabu_cell] for P2 in [out_of_board, is_tabu_cell]])
-		return same_piece or same_virtual_piece
-		
-	# 3. What to print inside cell (i,j) when dumping a solution? In most cases, we print nothing, just white spaces
-	# inside the cell; if print_piece_name is set to True (just for debug reasons; it defaults to False), we print the
-	# name of the piece covering cell (i,j) instead. If no piece is covering the cell and it is an internal board cell,
-	# we print the text present in the original board at position (i,j), i.e., the solution date components.
-	def text_at_cell(i,j):
-		print_piece_name = False
-		idx = IDX_OF_PIECE_AT_CELL(i, j)
-		return (cells[i][j].rjust(3)         if idx is None        else \
-				" " + piece_names[idx] + " " if print_piece_name     else \
-				"   ")                       if cells[i][j] != "╳" else "   "
-	
-	# 4. When we are drawing the crossing at (i,j) we are surrounded by the 4 cells topLeft@(i-1,j-1), topRight@(i-1,j), 
-	# botRight@(i,j), botLeft@(i,j-1): What symbol to print? There are 2^4=16 possibilities, depending on which ones of 
-	# the 4 adjacent cell couples <topLeft,topRight>, <topRight,botRight>, <botRight,botLeft>, and <botLeft,topLeft>
-	# belong to the same piece (if any). The two extreme cases: If all four cells surrounding the crossing belong to 
-	# the same piece, we print "nothing", i.e., a space " ". If they belong to 4 different pieces, then the symbol "╋"
-	# is selected to neatly separate the four areas; in all the other situations, the proper symbol is as follows:
-	def connector_at_crossing(i,j):
-		char_idx = sum([2**idx * (1 if same_piece_at_cells(cell1,cell2) else 0) for idx, (cell1,cell2) in enumerate(
-		[((i  ,j-1),(i-1,j-1)), # <botLeft ,topLeft>  FTFTFTFTFTFTFTFT # from
-		 ((i  ,j  ),(i  ,j-1)), # <botRight,botLeft>  FFTTFFTTFFTTFFTT # four
-		 ((i-1,j  ),(i  ,j  )), # <topRight,botRight> FFFFTTTTFFFFTTTT # couples of
-		 ((i-1,j-1),(i-1,j  ))] # <topLeft ,topRight> FFFFFFFFTTTTTTTT # adjacent cells we obtain...
-		)])                     #                      16 combinations
-		return                                       "╋┣┻┗┫┃┛╹┳┏━╺┓╻╸ "[char_idx] # Alternative: "╬╠╩╚╣║╝ ╦╔═ ╗ ╸ "    
-		
+    # 2. An aux function that returns True iff the two cells given as input are covered by the same piece in "solution"
+    def same_piece_at_cells(cell1,cell2):
+        (i1,j1) = cell1
+        (i2,j2) = cell2
+        idx1 = IDX_OF_PIECE_AT_CELL(i1, j1)
+        idx2 = IDX_OF_PIECE_AT_CELL(i2, j2)
+        # First, the easy check: If both cells are indeed covered by some piece, and that's the same piece, then fine!
+        same_piece = (idx1 is not None and idx2 is not None and idx1==idx2)
+        # But, we have to deal with several special/corner cases, where one or both cells are either tabu cells
+        # or lie outside the board, or are covered by no piece at all (the 3 cells left visible in each solution).
+        # What does it mean to be "covered by the same piece" in these cases? We define that it means to belong to a
+        # virtual piece that surrounds the board and absorbs the tabu cells; couples of cells belong to this piece iff
+        # they are both outside the board, or they are both tabu cells, or one is a tabu cell and one is out of board.
+        same_virtual_piece = \
+            any([P1(cell1) and P2(cell2) for P1 in [out_of_board, is_tabu_cell] for P2 in [out_of_board, is_tabu_cell]])
+        return same_piece or same_virtual_piece
+        
+    # 3. What to print inside cell (i,j) when dumping a solution? In most cases, we print nothing, just white spaces
+    # inside the cell; if print_piece_name is set to True (just for debug reasons; it defaults to False), we print the
+    # name of the piece covering cell (i,j) instead. If no piece is covering the cell and it is an internal board cell,
+    # we print the text present in the original board at position (i,j), i.e., the solution date components.
+    def text_at_cell(i,j):
+        print_piece_name = False
+        idx = IDX_OF_PIECE_AT_CELL(i, j)
+        return (cells[i][j].rjust(3)         if idx is None        else \
+                " " + piece_names[idx] + " " if print_piece_name     else \
+                "   ")                       if cells[i][j] != "╳" else "   "
+    
+    # 4. When we are drawing the crossing at (i,j) we are surrounded by the 4 cells topLeft@(i-1,j-1), topRight@(i-1,j), 
+    # botRight@(i,j), botLeft@(i,j-1): What symbol to print? There are 2^4=16 possibilities, depending on which ones of 
+    # the 4 adjacent cell couples <topLeft,topRight>, <topRight,botRight>, <botRight,botLeft>, and <botLeft,topLeft>
+    # belong to the same piece (if any). The two extreme cases: If all four cells surrounding the crossing belong to 
+    # the same piece, we print "nothing", i.e., a space " ". If they belong to 4 different pieces, then the symbol "╋"
+    # is selected to neatly separate the four areas; in all the other situations, the proper symbol is as follows:
+    def connector_at_crossing(i,j):
+        char_idx = sum([2**idx * (1 if same_piece_at_cells(cell1,cell2) else 0) for idx, (cell1,cell2) in enumerate(
+        [((i  ,j-1),(i-1,j-1)), # <botLeft ,topLeft>  FTFTFTFTFTFTFTFT # from
+         ((i  ,j  ),(i  ,j-1)), # <botRight,botLeft>  FFTTFFTTFFTTFFTT # four
+         ((i-1,j  ),(i  ,j  )), # <topRight,botRight> FFFFTTTTFFFFTTTT # couples of
+         ((i-1,j-1),(i-1,j  ))] # <topLeft ,topRight> FFFFFFFFTTTTTTTT # adjacent cells we obtain...
+        )])                     #                      16 combinations
+        return                                       "╋┣┻┗┫┃┛╹┳┏━╺┓╻╸ "[char_idx] # Alternative: "╬╠╩╚╣║╝ ╦╔═ ╗ ╸ "    
+        
 ########################################################################################################################
 # 7.2. Drawing the solution as standard text, but still in a visually pleasant way using ASCII-art tricks              #
 ########################################################################################################################
 
-	# We are ready to print the solution; it is just a matter of printing a full rectangular grid, as big as our 
-	# original board in terms of number of rows and columns. But, we will be using special characters along the "chrome" 
-	# of the table, i.e., along the lines that separate column from column and row from row, and at each intersection
-	# between horizontal and vertical lines.
-	# By picking special characters properly here, depending on how pieces are positioned in "solution", the result will
-	# be an ASCII-art rendering of the board, depicting all pieces properly interlocked around the solution.
+    # We are ready to print the solution; it is just a matter of printing a full rectangular grid, as big as our 
+    # original board in terms of number of rows and columns. But, we will be using special characters along the "chrome" 
+    # of the table, i.e., along the lines that separate column from column and row from row, and at each intersection
+    # between horizontal and vertical lines.
+    # By picking special characters properly here, depending on how pieces are positioned in "solution", the result will
+    # be an ASCII-art rendering of the board, depicting all pieces properly interlocked around the solution.
 
-	start_timer("Printing")
-	import itertools
-	# We iterate by row first; for each row, we consider first the "chrome" (border) of the row and then its content
-	for i, _i in itertools.product(range(H+1), ["H_chrome","content"]):
-		# The same thing we do - inside each row - for columns and their chrome
-		for j, _j in itertools.product(range(W+1), ["V_chrome","content"]):
-			# Then we:
-			print({
-				# Print (or skip via whitespaces) the vertical/horizontal border left/right or above/below each cell.
-				# Notice that here and in the rest of the printing, given the aspect ratio of typical monospaced fonts,
-				# we use 3 horizontal characters (3 spaces: "   " or 3 dashes: "━━━") for each vertical one (i.e., one
-				# space " " or one pipe "┃") to keep the board/grid approximately square:
-				("content" ,"V_chrome") : "┃"   if not same_piece_at_cells((i,j-1),(i,j)) else " "   if i<H or j<W else "",
-				("H_chrome","content" ) : "━━━" if not same_piece_at_cells((i-1,j),(i,j)) else "   " if i<H or j<W else "",
-				# Print the proper connector symbol at each crossing between a vertical and a horizontal grid line
-				("H_chrome","V_chrome") : connector_at_crossing(i,j),
-				# Print the content of the cells, which is usually nothing, except for the 3 solution cells
-				("content" ,"content" ) : "" if i>=H or j>=W else text_at_cell(i,j)
-			}[(_i,_j)], end='')        
-		print("", end="\n" if i<H else "")
-	print("")
-	stop_timer("Printing")
-	
+    start_timer("Printing")
+    import itertools
+    # We iterate by row first; for each row, we consider first the "chrome" (border) of the row and then its content
+    for i, _i in itertools.product(range(H+1), ["H_chrome","content"]):
+        # The same thing we do - inside each row - for columns and their chrome
+        for j, _j in itertools.product(range(W+1), ["V_chrome","content"]):
+            # Then we:
+            print({
+                # Print (or skip via whitespaces) the vertical/horizontal border left/right or above/below each cell.
+                # Notice that here and in the rest of the printing, given the aspect ratio of typical monospaced fonts,
+                # we use 3 horizontal characters (3 spaces: "   " or 3 dashes: "━━━") for each vertical one (i.e., one
+                # space " " or one pipe "┃") to keep the board/grid approximately square:
+                ("content" ,"V_chrome") : "┃"   if not same_piece_at_cells((i,j-1),(i,j)) else " "   if i<H or j<W else "",
+                ("H_chrome","content" ) : "━━━" if not same_piece_at_cells((i-1,j),(i,j)) else "   " if i<H or j<W else "",
+                # Print the proper connector symbol at each crossing between a vertical and a horizontal grid line
+                ("H_chrome","V_chrome") : connector_at_crossing(i,j),
+                # Print the content of the cells, which is usually nothing, except for the 3 solution cells
+                ("content" ,"content" ) : "" if i>=H or j>=W else text_at_cell(i,j)
+            }[(_i,_j)], end='')        
+        print("", end="\n" if i<H else "")
+    print("")
+    stop_timer("Printing")
+    
 
 ########################################################################################################################
 # 8. Conclusion                                                                                                        #
 ########################################################################################################################
 
-	# We have found and printed one solution to our puzzle! We may be asked to provide further solutions to the same 
-	# puzzle (there are surprisingly many, for each day); in this case we keep looping (see the "for" statement from 
-	# Section 6.1), in a process called "model enumeration". Otherwise, we break out of the cycle and conclude.
-	if not enumerate_solutions:
-		break
-	else:
-		start_timer("SAT solving")
+    # We have found and printed one solution to our puzzle! We may be asked to provide further solutions to the same 
+    # puzzle (there are surprisingly many, for each day); in this case we keep looping (see the "for" statement from 
+    # Section 6.1), in a process called "model enumeration". Otherwise, we break out of the cycle and conclude.
+    if not enumerate_solutions:
+        break
+    else:
+        start_timer("SAT solving")
 
 ########################################################################################################################
 # 8.1. Optionally printing info & stats about the solution process and its outcome                                     #
@@ -897,14 +896,14 @@ for model in solver.enum_models() if not help else []:
 
 # In case we were enumerating models, and we're done, we print the total number of models found:
 if enumerate_solutions:
-	print(f"\r\33[K|solutions| = {n_models}", flush = True)
+    print(f"\r\33[K|solutions| = {n_models}", flush = True)
 elif n_models == 0 and not help:
-	print("No solution found")
+    print("No solution found")
 
 # The user may want to dig deeper in what the solver did, so let's print some stats (only if we are in verbose mode):
-if "-v" in flags:	
-	print("[SAT] Solver stats:")
-	print("\n".join([f"[SAT] - {key}: {value}" for key, value in solver.accum_stats().items()]))	
+if "-v" in flags:   
+    print("[SAT] Solver stats:")
+    print("\n".join([f"[SAT] - {key}: {value}" for key, value in solver.accum_stats().items()]))    
 
 ########################################################################################################################
 # 8.2. Optionally dumping to file the SAT instance(s) we've been dealing with                                          #
@@ -912,47 +911,47 @@ if "-v" in flags:
 
 # In case the "-dump" flag is present, we dump a DIMACS representation of the SAT instance(s) we've solved to a file.
 if "-dump" in flags:
-	start_timer("DIMACS dumping")
-	if "-v" in flags:
-		print("[DIMACS] Dumping instance(s):")
+    start_timer("DIMACS dumping")
+    if "-v" in flags:
+        print("[DIMACS] Dumping instance(s):")
 
-	# First, let's choose a nice name for such instance(s), one that is (a) clear and readable and (b) is such that a
-	# lexicographic sorting produces the same order as the underlying temporal ordering of the dates involved.
-	# This may come quite handy if several instances are placed in the same directory.
-	
-	# We start by extracting the (shortened) names for months and week days from the puzzle table
-	month_names = cells[0][:6] + cells[1][:6]
-	day_names   = cells[6][3:] + cells[7][4:]
-	# Using these lists, the name of the month is turned into its ordinal position in [1...12]
-	date_elems = [1+month_names.index(X) if X in month_names else X for X in date_elements]
-	
-	# The three date elements are not sorted, because on the command line, for maximum flexibility, we allowed them to
-	# be specified in any order, and the rest of the script didn't require any specific sorting either. Now we need one.
-	# So we sort the date components as follows: month number first, then day number, then name of the week day. 
-	# The year is assumed to be the current year, and is positioned first.
-	sorted_elems = [str(X).zfill(2) for X in sorted(date_elems, key=lambda e: (not isinstance(e, int), e in day_names))]
-	prefix = date.today().strftime('%Y') + "_" + "_".join(sorted_elems)
-	# The prefix of the file name that comes out of the above manipulations is like this: "2025_04_06_Sunday"
-	
-	# Short aux function to print the filenames of the instances about to be dumped, if required (with "-v")
-	def _print(txt):
-		if "-dump" in flags and "-v" in flags:
-			print(f"[DIMACS] - '{txt}'")
-		return txt
-	
-	# The instance we have solved is almost always satisfiable (there are a few exceptions)
-	cnf.to_file(_print(prefix + "_" + ("UNSAT.cnf" if (n_models==0) else "SAT_multiModel.cnf")))
-	# If we have been enumerating all models, there are a couple of interesting extra instances we may want to dump:
-	if n_models>0 and enumerate_solutions:
-		# (a) One where all models but one are ruled out by adding clauses that block their acceptability.
-		#     By construction, this is a satisfiable instance with just one model:
-		[cnf.append([-l for l in model]) for model in models[:-1]]		
-		cnf.to_file(_print(prefix + "_" + "SAT_singleModel.cnf"))
-		# (b) One where also the last remaining model has been ruled out.
-		#     By construction, this is an unsatisfiable instance, whose unsatisfiability proves we listed all models.
-		cnf.append([-l for l in models[-1]])
-		cnf.to_file(_print(prefix + "_" + "UNSAT.cnf"))
-	stop_timer("DIMACS dumping")
+    # First, let's choose a nice name for such instance(s), one that is (a) clear and readable and (b) is such that a
+    # lexicographic sorting produces the same order as the underlying temporal ordering of the dates involved.
+    # This may come quite handy if several instances are placed in the same directory.
+    
+    # We start by extracting the (shortened) names for months and week days from the puzzle table
+    month_names = cells[0][:6] + cells[1][:6]
+    day_names   = cells[6][3:] + cells[7][4:]
+    # Using these lists, the name of the month is turned into its ordinal position in [1...12]
+    date_elems = [1+month_names.index(X) if X in month_names else X for X in date_elements]
+    
+    # The three date elements are not sorted, because on the command line, for maximum flexibility, we allowed them to
+    # be specified in any order, and the rest of the script didn't require any specific sorting either. Now we need one.
+    # So we sort the date components as follows: month number first, then day number, then name of the week day. 
+    # The year is assumed to be the current year, and is positioned first.
+    sorted_elems = [str(X).zfill(2) for X in sorted(date_elems, key=lambda e: (not isinstance(e, int), e in day_names))]
+    prefix = date.today().strftime('%Y') + "_" + "_".join(sorted_elems)
+    # The prefix of the file name that comes out of the above manipulations is like this: "2025_04_06_Sunday"
+    
+    # Short aux function to print the filenames of the instances about to be dumped, if required (with "-v")
+    def _print(txt):
+        if "-dump" in flags and "-v" in flags:
+            print(f"[DIMACS] - '{txt}'")
+        return txt
+    
+    # The instance we have solved is almost always satisfiable (there are a few exceptions)
+    cnf.to_file(_print(prefix + "_" + ("UNSAT.cnf" if (n_models==0) else "SAT_multiModel.cnf")))
+    # If we have been enumerating all models, there are a couple of interesting extra instances we may want to dump:
+    if n_models>0 and enumerate_solutions:
+        # (a) One where all models but one are ruled out by adding clauses that block their acceptability.
+        #     By construction, this is a satisfiable instance with just one model:
+        [cnf.append([-l for l in model]) for model in models[:-1]]      
+        cnf.to_file(_print(prefix + "_" + "SAT_singleModel.cnf"))
+        # (b) One where also the last remaining model has been ruled out.
+        #     By construction, this is an unsatisfiable instance, whose unsatisfiability proves we listed all models.
+        cnf.append([-l for l in models[-1]])
+        cnf.to_file(_print(prefix + "_" + "UNSAT.cnf"))
+    stop_timer("DIMACS dumping")
 
 ########################################################################################################################
 # 8.3. Optionally printing some stats about how (CPU) time was spent in solving the puzzle                             #
@@ -967,8 +966,8 @@ elapsed["Other"] = total - sum([elapsed[label] for label in elapsed])
 # If the user wants to know the timing details, e.g., which percentage of the overall running time was spent in
 # generating VS solving the instance, we let them know.
 if "-v" in flags:
-	print(f"[TIME] Total CPU time: {format_time(total)}")
-	[print(f"[TIME] - {label}: {format_time(time)} ({round(100.0*time/total,2)}%)") for label, time in elapsed.items()]
+    print(f"[TIME] Total CPU time: {format_time(total)}")
+    [print(f"[TIME] - {label}: {format_time(time)} ({round(100.0*time/total,2)}%)") for label, time in elapsed.items()]
 
 ########################################################################################################################
 # 8.4. Optionally printing the help page and describing the script commandline options                                 #
@@ -1032,9 +1031,9 @@ ADVANCED OPTIONS:
   +COMPONENT      Add a component to the formula
 
   Available components (see the code for details):
-  		REQUIRED: T.1, T.2, T.3.1, I.1, E.1.1, E.2.1
-  		OPTIONAL (ON by default): T.3.2, I.2
-			OPTIONAL (OFF by default): T.4, E.1.2, E.2.2
+            REQUIRED: T.1, T.2, T.3.1, I.1, E.1.1, E.2.1
+            OPTIONAL (ON by default): T.3.2, I.2
+            OPTIONAL (OFF by default): T.4, E.1.2, E.2.2
 
   Examples:
     -T.3.2              Remove optional "non-piece" constraints
@@ -1066,7 +1065,7 @@ EXAMPLES:
 ########################################################################################################################
 # 8.5. Exiting                                                                                                         #
 ########################################################################################################################
-	
+    
 # Finally, the exit/return value of the whole script. It would be a nice touch to return the number of models/solutions
 # we found; unfortunately, such number may be in the thousands, whereas the exit code in most Unix environments
 # is an 8 bit integer. So we adopt the standard Unix convention for return/exit values of scripts/functions: 0 means 
