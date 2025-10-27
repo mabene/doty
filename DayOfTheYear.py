@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ########################################################################################################################
-# Content: Day-of-the-Year (DOTY) puzzle solver, version 0.2                                                           #
+# Content: Day-of-the-Year (DOTY) puzzle solver, version 0.3                                                           #
 # Author: Marco Benedetti (https://www.linkedin.com/in/marco-benedetti-art)                                            #
 #                                                                                                                      #
 # Note 1: No AI assistant has been used to produce this script; every line of code and every comment is human-written. #
@@ -17,7 +17,7 @@ modification, is hereby granted, provided that the following conditions are met:
 1.  **Attribution:** All copies of this software and derivative works must include the above copyright notice, this list
 	of conditions, and the following disclaimer.
 2.  **Non-Commercial Use:** This software may not be used for any commercial purpose.
-3.  **No Warranty:** This software is provided "as is," without warranty of any kind, express or implied, including but 
+3.  **No Warranty:** This software is provided "as is," without warranty of any kind, express or implied, including but
 	not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. 
 	In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether 
 	in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use 
@@ -71,7 +71,7 @@ The rest of this script is organized as follows:
 from sys import argv as flags
 help = "-h" in flags
 if help:
-  flags = ["-h"]
+	flags = ["-h"]
 
 ########################################################################################################################
 # 1.1. Timing the execution of the script                                                                              #
@@ -145,7 +145,7 @@ pieces = '''
 # In particular, we have 7 pentominoes (left, uppercase names) and 3 tetrominoes (right, lowercase names).
 
 # These 10 pieces - flipped on the back and/or rotated by multiples of 90° - are placed somewhere on the board.
-# The cumulated surface of all these pieces is 47 cells; so if you manage to put them all on the board (with no overlap 
+# The cumulated surface of all these pieces is 47 cells; so if you manage to put them all on the board (with no overlap
 # between pieces and all pieces positioned within the bounds of the board), then exactly 3 free board cells remain.
 
 # The goal of the puzzle is indeed to place all 10 pieces on the board, with no overlap, in such a way as to cover it 
@@ -178,7 +178,7 @@ __sample_solution_for_Saturday_October_25 = """
 # with some (6) fixed and some (3) variable holes, given the 7 pentominoes and the 3 tetrominoes in the picture above.
 
 # NICE TO KNOW: The code that follows extracts dynamically from the above visual representations (in particular, from 
-# the variables "board" and "pieces" - cfr. Section 3) all the relevant information about the shape, size, content, and 
+# the variables "board" and "pieces" - cfr. Section 3) all the relevant information about the shape, size, content, and
 # dimension of the board and of the pieces/polyominoes. This means that if you change the above "drawings", you can
 # generate and play with and solve any alternative layout or variant of the original puzzle!!
 
@@ -268,7 +268,7 @@ pieces = [[(i,j) for i in range(len(piece)) for j in range(len(piece[i])) if pie
 ########################################################################################################################
 
 # By their nature, the 10 pieces of the puzzle are so called *free* polyominoes; this means that, before being used, 
-# they can be FLIPPED on the back (i.e., rotated by 180° around any axis on the board plane) and/or ROTATED on the board 
+# they can be FLIPPED on the back (i.e., rotated by 180° around any axis on the board plane) and/or ROTATED on the board
 # plane, by multiples of 90°. Once a specific flip/rotation state is decided, the result is called a "fixed polyomino".
 
 # The question is: Which part of the solution process is in charge of "fixing free polyominoes", in all possible ways?
@@ -311,13 +311,13 @@ fixed_variants_of_pieces = [all_rotated_variants(piece) + all_rotated_variants(d
 # polyominoes (which are also called "its images under the symmetries of the dihedral group D4"). However, those images
 # are not necessarily distinct: The more symmetry a free polyomino has, the fewer distinct fixed counterparts it has.
 
-# A puzzle piece that is invariant under some or all symmetries of D4 may correspond to only 4 or 2 fixed polyominoes.
-# In particular, some of our pieces are not "chiral", i.e., they have an axis of symmetry (on their own plane), so their 
+# A puzzle piece that is invariant under some or all symmetries of D4 may correspond to only 4, 2, 1 fixed polyominoes.
+# In particular, some of our pieces are not "chiral", i.e., they have an axis of symmetry (on their own plane), so their
 # dopplegangers are superimposable (via roto-translations) on their mirror images, i.e., are 2D-congruent to their back.
 # See, e.g., pieces L and T. Similarly, certain pieces match themselves if rotated twice by 90° (e.g., I).
 
 # So far, we have left all this potential redundancy unchecked because detecting flip- or rotation-invariance with the 
-# current data representation is harder than it needs to be. And so we have generated 10x4x2 = 80 fixed pieces.
+# current data representation is harder than it needs to be. In so doing, we have generated 10x4x2 = 80 fixed pieces.
 # But now we can detect and filter out repeated fixed images, thus eliminating redundant dopplegangers and all.
 def deduplicated(fixed_variants_idxs):
     return [list(t) for t in set(tuple(sorted(fixed_variant_idxs)) for fixed_variant_idxs in fixed_variants_idxs)]
@@ -381,16 +381,16 @@ input; (3) building the CNF directly gives us more control on how it is generate
 # piece on top of a specific cell. In particular, the variable returned by VAR_FOR_PIECE_AT(piece_idx, i, j) is True iff
 # piece number #piece_idx covers the cell (i,j) in the board. This representation is quite verbose; and, it allows for
 # multiple pieces on the same cell (piece overlaps), a situation that is not valid for our puzzle and will need to be
-# ruled out explicitly (see component [T.1] in Section 5.2); still, it gives very good results, experimentally.
+# ruled out explicitly (see component [T.1] in Section 5.1); still, it gives very good results, experimentally.
 def VAR_FOR_PIECE_AT(piece_idx, i, j):
 	return 1 + (i*W + j) + (piece_idx*W*H)	
 
 # So the total number of "core" variables/propositions/bits we need to represent a full board/piece configuration for
-# the original puzzle (excluding auxiliary variables, see Section 4.3) is equal to... 
+# the original puzzle (excluding auxiliary variables, see Section 4.4) is equal to... 
 CORE_VAR_COUNT = VAR_FOR_PIECE_AT(len(pieces)-1,H-1,W-1) # (7x8)*10 = 560
 
-# Some auxiliary variables will also be generated to keep the theory compact (see Section 4.3); there is only one 
-# clause-construction primitive that requires the generation of auxiliary variables (see Section 5.2, component [T.3]).
+# Some auxiliary variables will also be generated to keep the theory compact (see Section 4.4); there is only one 
+# clause-construction primitive that requires the generation of auxiliary variables (see Section 5.1, component [T.3]).
 # It will call this function 1803 times overall (once for each distinct position/orientation/flip of every piece), so
 # the total number of variables in any variant of the SAT instances we'll produce is going to be 560+1803 = 2303.
 AUX_VAR_IDX = CORE_VAR_COUNT + 1
@@ -405,7 +405,7 @@ def NEW_AUX_VAR():
 ########################################################################################################################
 
 # The "at least one of these n propositions is true" concept is rendered very easily in CNF, because that's just what 
-# a "clause" means: One of its literals must be true (L1∨L2∨……∨Ln) and this is a constraint we add, or conjunct, to all 
+# a "clause" means: One of its literals must be true (L1∨L2∨……∨Ln) and this is a constraint we add, or conjunct, to all
 # the rest. The encoding of the concept is a list/CNF (to be appended to the current CNF) containing a single 
 # list/clause of the set of literals at least one of which must be true:
 def AT_LEAST_ONE(lit_idxs):
@@ -413,7 +413,7 @@ def AT_LEAST_ONE(lit_idxs):
 
 # The "at most one of these propositions is true" concept is less easily rendered; this is not a standard propositional
 # operator; some solvers have an extra/specialized "propagator" for it, but we stick to the vanilla syntax. Whereby it
-# takes a quadratic number of binary clauses to capture the semantics. It is a matter of saying that whenever one of the 
+# takes a quadratic number of binary clauses to capture the semantics. It is a matter of saying that whenever one of the
 # literals is true, all the other ones are false: ∀i≠j.(Li→¬Lj), i.e., ∀i≠j.(¬Li∨¬Lj); that's nx(n-1) binary clauses:
 def AT_MOST_ONE(lit_idxs):
 	return [[-if_true,-then_false] for if_true in lit_idxs for then_false in [x for x in lit_idxs if x != if_true]]
@@ -427,7 +427,50 @@ def NONE_OF(lit_idxs):
 	return [[-lit] for lit in lit_idxs]
 
 ########################################################################################################################
-# 4.3. Tractable CNF-ization of disjunctive portions of the puzzle theory                                              #
+# 4.3. Dealing with mandatory/optional components of the clausal constraints that end up in our formula                #
+########################################################################################################################
+
+# The set of clauses we will accumulate into our final CNF is made of several individual "components". Some of these 
+# components of the overall logic encoding are required for the soundness of our approach and must always be included; 
+# others are optional, i.e., the logic works without them, but their presence may come handy to the AI reasoner.
+
+# We now build a very simple piece of software machinery whereby we can (1) define some base configuration that tells
+# which components are "active"/included (VS "inactive"/excluded) by default; (2) expose flags at commandline to fully 
+# customize such base configuration, if necessary; (3) clearly mark in the code each component and give it a name.
+
+# Let's start with (1). Components will have short strings as names, such as "I.1" or "T.2", etc. By default, components
+# listed in the following "default_cfg_OK" list will be generated, whereas the ones in "default_cfg_KO" will be skipped:
+default_cfg_OK = [ "E.1.1", "E.2.1", "T.1", "T.2", "T.3.1", "T.3.2", "I.1", "I.2" ] # default active components
+default_cfg_KO = [ "E.1.2", "E.2.2", "T.4" ] # default inactive components
+
+# What do all these components mean? Which ones are mandatory and which ones are optional? Where are they generated?
+# The answers to these questions will arrive in short order, starting from the very next Section (4.4).
+
+# Concerning (2): From the commandline, it will be possible to alter such default configuration, by either removing an
+# optional component (e.g., via "-I.2") or by adding an optional component which is not in the default configuration
+# (e.g., "+T.4"); you can also remove required components, but at that point you are no longer solving the original
+# puzzle, but something else. We'll see an example where removing required components may make sense.
+# Overall, starting from the defaults and applying commandline modifiers, we obtain the following "configuration":
+config = [X for X in default_cfg_OK if "-"+X not in flags] + [X for X in default_cfg_KO if "+"+X in flags]
+
+# Finally, let's implement (3): The following auxiliary function, simply named "C", will wrap any line of code that 
+# produces clauses (see Sections 4.4, 5.1, 5.2), so to filter away those belonging to inactive components. "C" is a 
+# mnemonic for "Component" or "Constraint". At the calling site, invoking this function will declare the component 
+# name as the first argument, thus explicitly and visibly associating clauses with the component they belong to.
+def C(component_name,component_clauses):
+	return component_clauses if component_name in config else []
+
+# Let's see a dummy example (suppose we are in the default component configuration).
+cnf = [] # We start from an empty CNF.
+# Now, by writing:
+cnf.extend( C("I.1", [[1,-2,3],[4,-5]]) ) # ...we declare clauses [1,-2,3] and [4,-5] are part of component "I.1"
+# ... such clauses will be actually included in the CNF, as "I.1" is active. Whereas, if we write:
+cnf.extend( C("T.4", [[6,7]]) ) # we say clause [6,7] is in the inactive component "T.4": it will be "quitely" skipped.
+
+# Now, not all constraits are as easy to express as those in Section 4.2; let's see a more difficult yet necessary case.
+
+########################################################################################################################
+# 4.4. Tractable CNF-ization of disjunctive portions of the puzzle theory                                              #
 ########################################################################################################################
 
 # The following function gets as input a formula in DNF (Disjunctive Normal Form), i.e., a disjunction of conjunctions
@@ -442,9 +485,9 @@ def NONE_OF(lit_idxs):
 # So we use a special case of the Tseytin transformation here (https://en.wikipedia.org/wiki/Tseytin_transformation), by
 # (a) introducing 1 auxiliary variable for each conjunct; (b) generating clauses that bind the truth values of such aux
 # variables to those of the conjuncts; (c) expressing the "at least one" constraints on the auxiliary variables.
-# In so doing, the generation of the CNF stays polynomial in space and time; but, extra variables are introduced.
+# In so doing, the generation of the CNF stays polynomial in space and time, at the cost of introducing extra variables.
 #
-# In our case, this function will be called (from within Section 5.2, component [T.3]) several times (once for each 
+# In our case, this function will be called (from within Section 5.1, component [T.3]) several times (once for each 
 # piece of the puzzle), each time with 4...100 conjuncts of >50 literals each (these numbers are proportional to the
 # board size). The direct CNF construction obtained by distributing connectors might thus have >50^100 clauses!
 # Given that each conjunct represents one positioning of one piece on the board, the use of the Tseytin transformation
@@ -475,72 +518,28 @@ def AT_LEAST_ONE_CONJUNCT(DNF):
 
 '''
 Now that we have a set of propositional variables (and their associated semantics) to talk about the position of pieces
-on the board (Section 4.1) and the means to write in clausal form all the necessary constraints (Sections 4.2 and 4.3),
+on the board (Section 4.1) and the means to write in clausal form all the necessary constraints (Sections 4.2 and 4.4),
 let's construct a set of clauses that captures the rules of our puzzle, and what solutions look like.
 
-In particular, we first build a "puzzle theory" here (Section 5.2), i.e., a set of logical statements (list of clauses)
+In particular, we first build a "puzzle theory" here (Section 5.1), i.e., a set of logical statements (list of clauses)
 whose models are all and only the legal configurations of all the pieces placed somewhere on the board (independently of
 any specific instance we may want to solve). Then we define, again in logical terms, what an "instance" of the problem
-is (Section 5.3). Finally, we conjoin the puzzle theory with the instance of interest (e.g., today's date), so that the 
+is (Section 5.2). Finally, we conjoin the puzzle theory with the instance of interest (e.g., today's date), so that the
 resulting formula's models are all and only the puzzle solutions for that instance (day).
 
 Note that there are multiple ways to write the puzzle theory and the instance, with optional components that can be used
-or omitted. This is dealt with in Section 5.1.
+or omitted. This is accounted for in Section 5.3.
 '''
 
 # Let's go with the encoding process:
 start_timer("Encoding")
 
 ########################################################################################################################
-# 5.1. Dealing with mandatory/optional portions of the clausal constraints that end up in our formula                  #
+# 5.1. Clausal-form constraints any solution to any instance of the puzzle must comply with, aka, the "puzzle theory"  #
 ########################################################################################################################
 
-# The set of clauses we will accumulate into our final CNF is made of several components, clearly marked in the code:
-# - In Section 5.2, the puzzle theory is generated. It is made of 4 components, called: [T.1], [T.2], [T.3], [T.4],
-#   where component [T.3] has 2 sub-components: [T.3.1] and [T.3.2];
-# - In Section 4.3, the 2 components of each Tseytin encoding used within [T.3], i.e., [E.1] and [E.2], are
-#   generated via the code in Section 4.3; both have 2 subcomponents: [E.1.1], [E.1.2] and [E.2.1], [E.2.2];
-# - In Section 5.3, the puzzle instance specification is generated; it has 2 components: [I.1] and [I.2].
-
-# We'll see later (Section 5.2 and 5.3) what these individual components mean and represent exactly; now, we need to 
-# deal with the fact that some of these components of the overall specification are required for the soundness of our 
-# approach and must be present: They constitute a "core/minimal" puzzle theory. Others are optional, redundant:
-
-#           REQUIRED                OPTIONAL
-# Theory:   [T.1], [T.2], [T.3.1]   [T.3.2], [T.4]
-# Instance: [I.1]                   [I.2]
-# Encoding: [E.1.1], [E.2.1]        [E.1.2], [E.2.2]
-
-# By default, the components listed in "default_cfg_OK" will be generated, the ones in "default_cfg_KO" will be skipped:
-default_cfg_OK = [ "E.1.1", "E.2.1", "T.1", "T.2", "T.3.1", "T.3.2", "I.1", "I.2" ]
-default_cfg_KO = [ "E.1.2", "E.2.2", "T.4" ]
-
-# From the commandline, it is possible to alter such default configuration, by either removing an optional component
-# (e.g., "-I.2") or adding an optional component which is not in the default configuration (e.g., "+T.4"); you can also
-# remove *REQUIRED* components, but at that point you are no longer solving the original puzzle, but something else.
-# For example, by removing the instance specification ("-I.1 -I.2") you are asking for any board with all the pieces
-# positioned inside, independently of any date, i.e., independently of which 3 cells are left visible.
-config = [X for X in default_cfg_OK if "-"+X not in flags] + [X for X in default_cfg_KO if "+"+X in flags]
-
-# The following auxiliary function will wrap any line of code that produces clauses (see Sections 4.3, 5.2, 5.3), so to
-# filter away those belonging to deactivated theory components. "C" is a mnemonic for "Component" or "Constraint".
-# At the calling site, invoking this function will declare the theory component as the first argument, thus explicitly
-# and visibly associating clauses with the component they belong to.
-def C(label,clauses):
-	return clauses if label in config else []
-
-# In verbose mode, we tell the user which components have been generated, and which have not.
-if "-v" in flags:
-	print(f"[THEORY] Formula components:")
-	print(f"[THEORY] - Included: {' '.join(config)}")
-	print(f"[THEORY] - Excluded: {' '.join([c for c in default_cfg_KO+default_cfg_OK if c not in config])}")
-
-########################################################################################################################
-# 5.2. Clausal-form constraints any solution to any instance of the puzzle must comply with, aka, the "puzzle theory"  #
-########################################################################################################################
-
-# Into the following "puzzle_theory" list, sets of clauses that define specific aspects/rules/constraints of the game
-# will accumulate. At the end, it will contain a formula in CNF that defines our entire puzzle theory.
+# Sets of clauses that define all the aspects/rules/constraints of the puzzle will be accumulated into the following 
+# "puzzle_theory" list, By the end of this section, it will contain a formula that defines our entire puzzle theory.
 puzzle_theory = []
 
 # [T.1] Geometric constraints: No overlap among pieces (i.e., no board cell may be covered by more than one piece)
@@ -557,7 +556,7 @@ puzzle_theory = []
 # of the others, see Section 3.3) we declare that one such valid position is part of any solution, for every piece:
 [puzzle_theory.extend([] if piece_idx<0 else
 	AT_LEAST_ONE_CONJUNCT( [\
-		# [T.3.1] The following portion of the conjunct specifies explicitly all cells where a piece is
+		# [T.3.1] The following portion of the conjunct specifies explicitly all cells that our piece covers
 		C("T.3.1",[VAR_FOR_PIECE_AT(piece_idx,i,j) for (i,j) in layout_of_piece]) + \
 
 		# [T.3.2] The following portion of the conjunct specifies explicitly all cells where a piece is not [OPTIONAL]
@@ -570,14 +569,14 @@ puzzle_theory = []
 	C("T.4",AT_LEAST_ONE([VAR_FOR_PIECE_AT(piece_idx,i,j) for i in range(H) for j in range(W)])) ) \
 		for piece_idx in range(len(pieces))]
 
-# Now, we have characterized how to place all pieces in all possible sound and mutually consistent board positions; what
-# is missing is... to specify what exact day/instance we want to target...
+# Now, we have characterized how to interlock all pieces in all possible sound and mutually consistent board positions.
+# What is missing is... to specify what exact day/instance we want to target...
 
 ########################################################################################################################
-# 5.3. Specifying which instance of the problem (i.e., which date/day of the calendar) we want to solve for            #
+# 5.2. Specifying which instance of the problem (i.e., which date/day of the calendar) we want to solve for            #
 ########################################################################################################################
 
-# By default, the script will solve the puzzle for today's date; so we import the date object, from which we extract the 
+# By default, the script will solve the puzzle for today's date; so we import the date object, from which we extract the
 # three relevant elements of the current date, and then cast them to the (uppercase, shortened) board format we need.
 from datetime import date
 today_date_elements = [date_elem.upper()[:3] for date_elem in date.today().strftime('%a %B %-d').split()]
@@ -607,7 +606,7 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 					for (i,j) in target_cells]))                   # cells that represent the target date.
 
 # Such constraint has a different meaning but a syntactic structure identical to the ╳s' encodings from [T.2]. I.e., 
-# there are cells we do not want to overlap with our pieces. In Section 5.2's case it's because they are not part of the
+# there are cells we do not want to overlap with our pieces. In Section 5.1's case it's because they are not part of the
 # board to begin with. Here, it's because we want to leave specific labels visible in order to... solve the puzzle!!
 
 # [I.2] Let's also specify the dual instance constraint: that any cell that is not part of the target date (and is not
@@ -616,8 +615,42 @@ puzzle_instance = C("I.1",NONE_OF([VAR_FOR_PIECE_AT(piece_idx,i,j) # none of... 
 		for i in range(H) for j in range(W) if (i,j) not in (tabu_cell_coordinates + target_cells)]
 	
 ########################################################################################################################
-# 5.4. Printing the size of the propositional encoding we've built                                                     #
+# 5.3. Mandatory/optional portions of the clausal constraints that end up in our formula, and its overall size         #
 ########################################################################################################################
+
+# The set of clauses we have accumulated into our final CNF is made of several components, clearly marked in the code:
+# - In Section 5.1, the puzzle theory is generated. It is made of 4 components, called: [T.1], [T.2], [T.3], [T.4],
+#   where component [T.3] has 2 sub-components: [T.3.1] and [T.3.2];
+# - In Section 4.4, the 2 components of each Tseytin encoding used within [T.3], i.e., [E.1] and [E.2], are generated; 
+#   both have 2 subcomponents: [E.1.1], [E.1.2] and [E.2.1], [E.2.2];
+# - In Section 5.2, the puzzle instance specification is generated; it has 2 components: [I.1] and [I.2].
+
+# We have seen along Sections 4.4, 5.1, and 5.2 what these individual components mean and represent exactly.
+# Some of them are REQUIRED for the soundness of our approach: They constitute a "core/minimal" formulation.
+# Others are OPTIONAL, redundant (marked as such in the code). To recap, the situation is as follows:
+
+#           REQUIRED                OPTIONAL
+# Theory:   [T.1], [T.2], [T.3.1]   [T.3.2], [T.4]
+# Instance: [I.1]                   [I.2]
+# Encoding: [E.1.1], [E.2.1]        [E.1.2], [E.2.2]
+
+# If we compare this table with the base configuration from Section 4.3, we see that "I.2" and "T.3.2", albeit
+# optional, are included by default, whereas the other optional components are left out by default.
+
+# We may ask: (I) Why some components are optional? And (II) why only some specific optional components are included?
+# The short answer to (I) is that required components are sufficient to capture in a correct and complete way the
+# rules of our game, whereas optional components express facts that the reasoner can derive autonomously from the core
+# theory; and so, strictly speaking, optional components constitute redundant information.
+# The short answer to (II) is that, empirically, this configuration turns out to be the faster encoding to solve.
+# (A formal proof of (I) and an experimetal proof of (II) can be built; both are left as an exercise to the reader.)
+
+# Let's now move to conclude the present encoding section by providing some information to the user (if asked).
+
+# In verbose mode, we tell the user which components have been generated, and which have not.
+if "-v" in flags:
+	print(f"[THEORY] Formula components:")
+	print(f"[THEORY] - Included: {' '.join(config)}")
+	print(f"[THEORY] - Excluded: {' '.join([c for c in default_cfg_KO+default_cfg_OK if c not in config])}")
 
 # In case the user wants to know, this is how big the propositional formula we constructed turned out to be.
 if "-v" in flags:
@@ -638,7 +671,7 @@ stop_timer("Encoding")
 Here we are, ready to solve the SAT encoding of our puzzle.
 
 We use the excellent "pysat" framework (https://pysathq.github.io) to wrap and call the external solver and retrieve 
-solution(s) from it. In particular, we ask "pysat" to use the "CaDiCaL" solver (https://github.com/arminbiere/cadical), 
+solution(s) from it. In particular, we ask "pysat" to use the "CaDiCaL" solver (https://github.com/arminbiere/cadical),
 because it proves the most effective on our puzzle instances.
 
 NOTE. "pysat" has several advanced features, such as: auto-CNF-ization procedures; solvers that support extended
@@ -682,7 +715,8 @@ solver = Solver(name = "cadical195", bootstrap_with=cnf) if not help else None
 # we set the seed to a fixed value of zero, making the solver reproducibly find the same solution for any given input.
 import random
 if solver is not None:
-	solver.configure({"seed":random.randint(0, int(2e9)) if "-rnd" in flags else 0, "phase": 0 if "-rnd" in flags else 1})
+	solver.configure({"seed" : random.randint(0, int(2e9)) if "-rnd" in flags else 0,
+		              "phase": 0 if "-rnd" in flags else 1})
 stop_timer("SAT setup")
 
 # There are often several (even thousands) of models for each formula (problem instance), so we instrument the code to
@@ -698,7 +732,7 @@ for model in solver.enum_models() if not help else []:
 	# We count and optionally store all models the SAT solver finds.
 	n_models += 1
 	if "-dump" in flags:
-		models.append(model[:CORE_VAR_COUNT]) # Auxiliary variables deterministically follow the core ones by construction
+		models.append(model[:CORE_VAR_COUNT]) # Aux variables deterministically follow the core ones, by construction
 	
 	if enumerate_solutions:
 		if show_solution:
@@ -891,8 +925,8 @@ if "-dump" in flags:
 	# Using these lists, the name of the month is turned into its ordinal position in [1...12]
 	date_elems = [1+month_names.index(X) if X in month_names else X for X in date_elements]
 	
-	# The three date elements are not sorted, because on the command line, for maximum flexibility, we allowed them to be
-	# specified in any order, and the rest of the script didn't require any specific sorting either. Now we need one.
+	# The three date elements are not sorted, because on the command line, for maximum flexibility, we allowed them to
+	# be specified in any order, and the rest of the script didn't require any specific sorting either. Now we need one.
 	# So we sort the date components as follows: month number first, then day number, then name of the week day. 
 	# The year is assumed to be the current year, and is positioned first.
 	sorted_elems = [str(X).zfill(2) for X in sorted(date_elems, key=lambda e: (not isinstance(e, int), e in day_names))]
@@ -931,7 +965,7 @@ elapsed["Other"] = total - sum([elapsed[label] for label in elapsed])
 
 # If the user wants to know the timing details, e.g., which percentage of the overall running time was spent in
 # generating VS solving the instance, we let him/her know.
-if "-v" in flags:	
+if "-v" in flags:
 	print(f"[TIME] Total CPU time: {format_time(total)}")
 	[print(f"[TIME] - {label}: {format_time(time)} ({round(100.0*time/total,2)}%)") for label, time in elapsed.items()]
 
@@ -1035,7 +1069,7 @@ EXAMPLES:
 # Finally, the exit/return value of the whole script. It would be a nice touch to return the number of models/solutions
 # we found; unfortunately, such number may be in the thousands, whereas the exit code in most Unix environments
 # is an 8 bit integer. So we adopt the standard Unix convention for return/exit values of scripts/functions: 0 means 
-# "success" and values >=1 imply an "error" condition. Here, 1 means we did not find any solution (a thing that may only 
+# "success" and values >=1 imply an "error" condition. Here, 1 means we did not find any solution (a thing that may only
 # happen in corner cases where we ask a puzzle solution which is not a valid date, or when we mess up with the puzzle
 # theory), whereas a return value of 0 corresponds to the expected situation where we solved the puzzle successfully.
 exit(0 if help or n_models>0 else 1)
