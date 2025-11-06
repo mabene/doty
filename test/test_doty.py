@@ -68,7 +68,7 @@ def canonicalize_doty_output(stdout: str) -> str:
 
                 Solves the DotY board puzzle for a given date by finding valid placements of
                 10 pieces that leave only the target date visible (month, day number, and
-                weekday). By default, if DATE is omitted, solves for today\'s date.
+                weekday). By default, if DATE is omitted, solves for today's date.
 
                 DATE:
                   Specify a target date in flexible format. All three components (month, day
@@ -103,7 +103,7 @@ def canonicalize_doty_output(stdout: str) -> str:
                                   - UNSAT.cnf: instance with all solutions blocked, proving
                                     completeness of enumeration (only with -count)
 
-                  -rnd            Randomize solver\'s search. Each run will likely find a
+                  -rnd            Randomize solver's search. Each run will likely find a
                                   different solution. Without this flag, the solver always
                                   finds the same solution for a given date (deterministic).
 
@@ -115,9 +115,9 @@ def canonicalize_doty_output(stdout: str) -> str:
                   +COMPONENT      Add a component to the formula
 
                   Available components (see the code for details):
-                  \t\tREQUIRED: T.1, T.2, T.3.1, I.1, E.1.1, E.2.1
-                  \t\tOPTIONAL (ON by default): T.3.2, I.2
-                \t\t\tOPTIONAL (OFF by default): T.4, E.1.2, E.2.2
+                            REQUIRED: T.1, T.2, T.3.1, I.1, E.1.1, E.2.1
+                            OPTIONAL (ON by default): T.3.2, I.2
+                            OPTIONAL (OFF by default): T.4, E.1.2, E.2.2
 
                   Examples:
                     -T.3.2              Remove optional "non-piece" constraints
@@ -130,7 +130,7 @@ def canonicalize_doty_output(stdout: str) -> str:
 
                 EXAMPLES:
                   DayOfTheYear.py
-                      Solve for today\'s date and display the solution
+                      Solve for today's date and display the solution
 
                   DayOfTheYear.py Fri Dec 25
                       Solve for Friday, December 25
@@ -171,10 +171,10 @@ def canonicalize_doty_output(stdout: str) -> str:
         (
             [" Mon ", " Jan ", " 01 ", "-v"],
             textwrap.dedent("""\
+                Target date: MON JAN 1
                 [THEORY] Formula components:
                 [THEORY] - Included: E.1.1 E.2.1 T.1 T.2 T.3.1 T.3.2 I.1 I.2
                 [THEORY] - Excluded: E.1.2 E.2.2 T.4
-                Target date: MON JAN 1
                 [CNF] Formula size:
                 [CNF] - variables: 2303
                 [CNF] - clauses:   102795
